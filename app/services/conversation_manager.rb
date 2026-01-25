@@ -12,6 +12,14 @@ class ConversationManager
 
   def process!
     load_message_log
+
+    # Phase 7: Early checks before session management
+    return if handle_stop_command
+    return if handle_start_command
+    return if handle_help_command
+    return if check_opt_out_status
+    return if check_rate_limit
+
     find_or_create_session
     handle_session_expiry if session_expired?
     update_session_activity
@@ -24,6 +32,153 @@ class ConversationManager
 
   def load_message_log
     @message_log = MessageLog.find(message_log_id)
+  end
+
+  # Phase 7: STOP command handler
+  def handle_stop_command
+    body = normalized_body
+    return false unless body == "stop"
+
+    # Create or find opt-out record
+    opt_out = SmsOptOut.find_or_initialize_by(
+      agency_id: message_log.agency_id,
+      phone_e164: message_log.from_phone
+    )
+
+    # Update timestamp if already exists
+    opt_out.opted_out_at = Time.current
+    opt_out.save!
+
+    # Send confirmation
+    send_simple_message(MessageTemplates::STOP_CONFIRM)
+
+    # Log audit event
+    AuditEvent.create!(
+      agency_id: message_log.agency_id,
+      event_type: "sms.opted_out",
+      metadata: {
+        message_log_id: message_log_id,
+        phone_e164: message_log.from_phone
+      }
+    )
+
+    true # Signal that we handled this and should stop processing
+  end
+
+  # Phase 7: START command handler
+  def handle_start_command
+    body = normalized_body
+    return false unless body == "start"
+
+    # Find and remove opt-out record
+    opt_out = SmsOptOut.find_by(
+      agency_id: message_log.agency_id,
+      phone_e164: message_log.from_phone
+    )
+
+    if opt_out
+      opt_out.destroy!
+
+      # Send re-enabled confirmation
+      send_simple_message(MessageTemplates::START_CONFIRM)
+
+      # Log audit event
+      AuditEvent.create!(
+        agency_id: message_log.agency_id,
+        event_type: "sms.opt_in",
+        metadata: {
+          message_log_id: message_log_id,
+          phone_e164: message_log.from_phone
+        }
+      )
+    else
+      # Not opted out, just send menu
+      send_simple_message(MessageTemplates::START_CONFIRM)
+    end
+
+    true # Signal that we handled this and should stop processing
+  end
+
+  # Phase 7: HELP command handler
+  def handle_help_command
+    body = normalized_body
+    return false unless body == "help"
+
+    # Send help message
+    send_simple_message(MessageTemplates::HELP)
+
+    # Log audit event
+    AuditEvent.create!(
+      agency_id: message_log.agency_id,
+      event_type: "sms.help_requested",
+      metadata: {
+        message_log_id: message_log_id,
+        phone_e164: message_log.from_phone
+      }
+    )
+
+    true # Signal that we handled this and should stop processing
+  end
+
+  # Phase 7: Check if user is opted out
+  def check_opt_out_status
+    opt_out = SmsOptOut.find_by(
+      agency_id: message_log.agency_id,
+      phone_e164: message_log.from_phone
+    )
+
+    return false unless opt_out
+
+    # Send block notice only if we should (once per day max)
+    if opt_out.should_send_block_notice?
+      send_simple_message(MessageTemplates::OPTED_OUT_BLOCK_NOTICE)
+      opt_out.mark_block_notice_sent!
+
+      # Log audit event
+      AuditEvent.create!(
+        agency_id: message_log.agency_id,
+        event_type: "sms.opted_out_blocked",
+        metadata: {
+          message_log_id: message_log_id,
+          phone_e164: message_log.from_phone
+        }
+      )
+    end
+
+    true # Signal that user is opted out and we should stop processing
+  end
+
+  # Phase 7: Check rate limit (max 10 inbound per hour)
+  def check_rate_limit
+    # Count inbound messages in last hour from this phone for this agency
+    recent_count = MessageLog.where(
+      agency_id: message_log.agency_id,
+      from_phone: message_log.from_phone,
+      direction: "inbound",
+      created_at: 1.hour.ago..Time.current
+    ).count
+
+    return false if recent_count <= 10
+
+    # Rate limit exceeded
+    send_simple_message(MessageTemplates::RATE_LIMITED)
+
+    # Log audit event
+    AuditEvent.create!(
+      agency_id: message_log.agency_id,
+      event_type: "sms.rate_limited",
+      metadata: {
+        message_log_id: message_log_id,
+        phone_e164: message_log.from_phone,
+        recent_count: recent_count
+      }
+    )
+
+    true # Signal that we're rate limited and should stop processing
+  end
+
+  def normalized_body
+    message_log.body.to_s.strip.downcase
   end
 
   def find_or_create_session

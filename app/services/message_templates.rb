@@ -59,4 +59,25 @@ module MessageTemplates
   EXPIRE_DELIVERY = <<~TEXT.strip
     Your policy for %{label} expires on %{expires_on}. Reply MENU for more options.
   TEXT
+
+  # Phase 7: Hardening & compliance templates
+  STOP_CONFIRM = <<~TEXT.strip
+    You have been opted out. No further messages will be sent. Reply START to re-enable.
+  TEXT
+
+  START_CONFIRM = <<~TEXT.strip
+    You have been re-enabled. Reply MENU for options.
+  TEXT
+
+  OPTED_OUT_BLOCK_NOTICE = <<~TEXT.strip
+    You are opted out. Reply START to re-enable.
+  TEXT
+
+  HELP = <<~TEXT.strip
+    CoverText can help with: 1) Insurance card 2) Policy expiration. Reply MENU to begin.
+  TEXT
+
+  RATE_LIMITED = <<~TEXT.strip
+    Too many requests. Please try again later or call the agency.
+  TEXT
 end
