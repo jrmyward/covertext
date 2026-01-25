@@ -113,15 +113,15 @@ class ConversationManagerTest < ActiveSupport::TestCase
   test "creates AuditEvent for menu sent" do
     inbound_log = create_inbound_message(@from_phone, "Test")
 
-    assert_difference "AuditEvent.count", 1 do
+    # Creates 2 events: intent_routed + menu_sent
+    assert_difference "AuditEvent.count", 2 do
       ConversationManager.process_inbound!(message_log_id: inbound_log.id)
     end
 
-    audit = AuditEvent.last
-    assert_equal @agency.id, audit.agency_id
-    assert_equal "conversation.menu_sent", audit.event_type
-    assert_equal inbound_log.id, audit.metadata["message_log_id"]
-    assert_equal "global.menu", audit.metadata["template"]
+    menu_audit = AuditEvent.where(event_type: "conversation.menu_sent").last
+    assert_equal @agency.id, menu_audit.agency_id
+    assert_equal inbound_log.id, menu_audit.metadata["message_log_id"]
+    assert_equal "global.menu", menu_audit.metadata["template"]
   end
 
   test "AuditEvent shows short menu template when applicable" do
@@ -147,6 +147,155 @@ class ConversationManagerTest < ActiveSupport::TestCase
 
       assert_in_delta expected_expiry, session.expires_at, 1.second
     end
+  end
+
+  # Phase 3: Intent routing tests
+
+  test "routes 'insurance card' to awaiting_vehicle_selection state" do
+    inbound_log = create_inbound_message(@from_phone, "I need my insurance card")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_vehicle_selection", session.state
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "Insurance card request received"
+    assert_includes outbound.body, "Reply MENU"
+  end
+
+  test "routes 'policy expire' to awaiting_policy_selection state" do
+    inbound_log = create_inbound_message(@from_phone, "when does my policy expire")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "Policy expiration request received"
+    assert_includes outbound.body, "Reply MENU"
+  end
+
+  test "numeric shortcut '1' routes to card flow" do
+    inbound_log = create_inbound_message(@from_phone, "1")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_vehicle_selection", session.state
+  end
+
+  test "numeric shortcut '2' routes to expiration flow" do
+    inbound_log = create_inbound_message(@from_phone, "2")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state
+  end
+
+  test "numeric shortcut '3' sends unsupported message then menu" do
+    inbound_log = create_inbound_message(@from_phone, "3")
+
+    # Should send 2 messages: unsupported + menu
+    assert_difference "MessageLog.where(direction: 'outbound').count", 2 do
+      ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+    end
+
+    messages = MessageLog.where(direction: "outbound").order(:created_at).last(2)
+    assert_includes messages[0].body, "not sure how to help"
+    assert_includes messages[1].body, "Welcome to CoverText"
+
+    session = ConversationSession.last
+    assert_equal "awaiting_intent_selection", session.state
+  end
+
+  test "help keyword sends unsupported message then menu" do
+    inbound_log = create_inbound_message(@from_phone, "I need to talk to an agent")
+
+    assert_difference "MessageLog.where(direction: 'outbound').count", 2 do
+      ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+    end
+
+    messages = MessageLog.where(direction: "outbound").order(:created_at).last(2)
+    assert_includes messages[0].body, "not sure how to help"
+    assert_includes messages[1].body, "Welcome to CoverText"
+  end
+
+  test "creates intent_routed audit event" do
+    inbound_log = create_inbound_message(@from_phone, "send me my card")
+
+    # Creates 1 event: intent_routed (no menu_sent because we're in card flow now)
+    assert_difference "AuditEvent.count", 1 do
+      ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+    end
+
+    audit = AuditEvent.where(event_type: "conversation.intent_routed").order(:created_at).last
+    assert_equal "insurance_card", audit.metadata["intent"]
+    assert audit.metadata["confidence"] > 0
+    assert_not_nil audit.metadata["normalized_body"]
+  end
+
+  test "in awaiting_vehicle_selection, random text gets menu guidance" do
+    # First get into the card flow
+    session = ConversationSession.create!(
+      agency: @agency,
+      from_phone_e164: @from_phone,
+      state: "awaiting_vehicle_selection",
+      context: {},
+      last_activity_at: Time.current,
+      expires_at: Time.current + 15.minutes
+    )
+
+    inbound_log = create_inbound_message(@from_phone, "random text")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_equal "Reply MENU to return to the main menu.", outbound.body
+
+    session.reload
+    assert_equal "awaiting_vehicle_selection", session.state # Still in same state
+  end
+
+  test "in awaiting_vehicle_selection, 'menu' returns to intent selection" do
+    session = ConversationSession.create!(
+      agency: @agency,
+      from_phone_e164: @from_phone,
+      state: "awaiting_vehicle_selection",
+      context: {},
+      last_activity_at: Time.current,
+      expires_at: Time.current + 15.minutes
+    )
+
+    inbound_log = create_inbound_message(@from_phone, "menu")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session.reload
+    assert_equal "awaiting_intent_selection", session.state
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "Welcome to CoverText"
+  end
+
+  test "in awaiting_policy_selection, 'cancel' returns to intent selection" do
+    session = ConversationSession.create!(
+      agency: @agency,
+      from_phone_e164: @from_phone,
+      state: "awaiting_policy_selection",
+      context: {},
+      last_activity_at: Time.current,
+      expires_at: Time.current + 15.minutes
+    )
+
+    inbound_log = create_inbound_message(@from_phone, "cancel")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session.reload
+    assert_equal "awaiting_intent_selection", session.state
   end
 
   private
