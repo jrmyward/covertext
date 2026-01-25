@@ -185,7 +185,21 @@ class ConversationManagerTest < ActiveSupport::TestCase
   end
 
   test "routes 'policy expire' to awaiting_policy_selection state" do
-    inbound_log = create_inbound_message(@from_phone, "when does my policy expire")
+    # Create contact and policy for test phone number
+    contact = Contact.create!(
+      agency: @agency,
+      first_name: "Test",
+      last_name: "User",
+      mobile_phone_e164: @from_phone
+    )
+    Policy.create!(
+      contact: contact,
+      label: "2022 Test Vehicle",
+      policy_type: "auto",
+      expires_on: 6.months.from_now
+    )
+
+    inbound_log = create_inbound_message(@from_phone, "when does my policy expire?")
 
     ConversationManager.process_inbound!(message_log_id: inbound_log.id)
 
@@ -193,8 +207,8 @@ class ConversationManagerTest < ActiveSupport::TestCase
     assert_equal "awaiting_policy_selection", session.state
 
     outbound = MessageLog.where(direction: "outbound").last
-    assert_includes outbound.body, "Policy expiration request received"
-    assert_includes outbound.body, "Reply MENU"
+    assert_includes outbound.body, "2022 Test Vehicle"
+    assert_includes outbound.body, "MENU to go back"
   end
 
   test "numeric shortcut '1' routes to card flow" do
@@ -227,6 +241,20 @@ class ConversationManagerTest < ActiveSupport::TestCase
   end
 
   test "numeric shortcut '2' routes to expiration flow" do
+    # Create contact and policy for test phone number
+    contact = Contact.create!(
+      agency: @agency,
+      first_name: "Test",
+      last_name: "User",
+      mobile_phone_e164: @from_phone
+    )
+    Policy.create!(
+      contact: contact,
+      label: "2022 Test Vehicle",
+      policy_type: "auto",
+      expires_on: 6.months.from_now
+    )
+
     inbound_log = create_inbound_message(@from_phone, "2")
 
     ConversationManager.process_inbound!(message_log_id: inbound_log.id)
@@ -540,6 +568,155 @@ class ConversationManagerTest < ActiveSupport::TestCase
 
     session = ConversationSession.last
     assert_equal "awaiting_vehicle_selection", session.state
+
+    # Send MENU command
+    inbound2 = create_inbound_message(contact.mobile_phone_e164, "menu")
+    ConversationManager.process_inbound!(message_log_id: inbound2.id)
+
+    session.reload
+    assert_equal "awaiting_intent_selection", session.state
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "Welcome to CoverText"
+  end
+
+  # Phase 5: Policy expiration fulfillment tests
+
+  test "expiration flow: resolves contact and lists policies" do
+    contact = contacts(:alice)
+
+    inbound_log = create_inbound_message(contact.mobile_phone_e164, "when does my policy expire")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state
+    assert_equal "policy_expiration", session.context["intent"]
+    assert_equal 2, session.context["options"].length
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "2018 Honda Accord"
+    assert_includes outbound.body, "2020 Toyota Camry"
+    assert_includes outbound.body, "Select which policy"
+  end
+
+  test "expiration flow: handles contact with no policies" do
+    contact = Contact.create!(
+      agency: @agency,
+      first_name: "NoPolicy",
+      last_name: "User",
+      mobile_phone_e164: "+15559990002"
+    )
+
+    inbound_log = create_inbound_message(contact.mobile_phone_e164, "expiring")
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_intent_selection", session.state # Reset to menu
+
+    outbound = MessageLog.where(direction: "outbound").order(:created_at).last(2)
+    assert_includes outbound[0].body, "No policies found"
+    assert_includes outbound[1].body, "Welcome to CoverText" # Menu
+  end
+
+  test "expiration flow: handles unknown contact" do
+    unknown_phone = "+15559999998"
+    inbound_log = create_inbound_message(unknown_phone, "policy expire")
+
+    ConversationManager.process_inbound!(message_log_id: inbound_log.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_intent_selection", session.state # Reset to menu
+
+    outbound = MessageLog.where(direction: "outbound").order(:created_at).last(2)
+    assert_includes outbound[0].body, "couldn't find your account"
+    assert_includes outbound[1].body, "Welcome to CoverText" # Menu
+  end
+
+  test "expiration fulfillment: valid selection creates Request and sends SMS" do
+    contact = contacts(:alice)
+
+    # Start expiration flow
+    inbound1 = create_inbound_message(contact.mobile_phone_e164, "expiring")
+    ConversationManager.process_inbound!(message_log_id: inbound1.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state
+
+    # Select first policy
+    inbound2 = create_inbound_message(contact.mobile_phone_e164, "1")
+
+    assert_difference [ "Request.count", "MessageLog.where(direction: 'outbound').count" ], 1 do
+      ConversationManager.process_inbound!(message_log_id: inbound2.id)
+    end
+
+    # Verify Request
+    request = Request.last
+    assert_equal "policy_expiration", request.request_type
+    assert_equal "fulfilled", request.status
+    assert_equal contact.id, request.contact_id
+    assert_not_nil request.fulfilled_at
+    assert_not_nil request.selected_ref
+
+    # Verify SMS message
+    sms = MessageLog.where(direction: "outbound").last
+    assert_includes sms.body, "2018 Honda Accord"
+    assert_includes sms.body, "expires on"
+    assert_equal 0, sms.media_count # No MMS for expiration
+    assert_equal request.id, sms.request_id
+
+    # Verify session state
+    session.reload
+    assert_equal "complete", session.state
+  end
+
+  test "expiration fulfillment: creates expire.request_fulfilled audit event" do
+    contact = contacts(:alice)
+
+    inbound1 = create_inbound_message(contact.mobile_phone_e164, "expiring")
+    ConversationManager.process_inbound!(message_log_id: inbound1.id)
+
+    inbound2 = create_inbound_message(contact.mobile_phone_e164, "1")
+
+    assert_difference "AuditEvent.where(event_type: 'expire.request_fulfilled').count", 1 do
+      ConversationManager.process_inbound!(message_log_id: inbound2.id)
+    end
+
+    audit = AuditEvent.where(event_type: "expire.request_fulfilled").last
+    assert_not_nil audit.metadata["policy_id"]
+    assert_not_nil audit.metadata["expires_on"]
+    assert_equal contact.id, audit.metadata["contact_id"]
+  end
+
+  test "expiration fulfillment: invalid selection sends error message" do
+    contact = contacts(:alice)
+
+    inbound1 = create_inbound_message(contact.mobile_phone_e164, "expiring")
+    ConversationManager.process_inbound!(message_log_id: inbound1.id)
+
+    # Invalid selection
+    inbound2 = create_inbound_message(contact.mobile_phone_e164, "99")
+
+    assert_no_difference "Request.count" do
+      ConversationManager.process_inbound!(message_log_id: inbound2.id)
+    end
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state # Still in same state
+
+    outbound = MessageLog.where(direction: "outbound").last
+    assert_includes outbound.body, "Invalid selection"
+  end
+
+  test "expiration flow: menu command returns to main menu" do
+    contact = contacts(:alice)
+
+    # Start expiration flow
+    inbound1 = create_inbound_message(contact.mobile_phone_e164, "expiring")
+    ConversationManager.process_inbound!(message_log_id: inbound1.id)
+
+    session = ConversationSession.last
+    assert_equal "awaiting_policy_selection", session.state
 
     # Send MENU command
     inbound2 = create_inbound_message(contact.mobile_phone_e164, "menu")

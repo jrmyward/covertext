@@ -1,7 +1,8 @@
 class OutboundMessenger
-  def self.send_sms!(agency:, to_phone:, body:)
+  def self.send_sms!(agency:, to_phone:, body:, request: nil)
     MessageLog.create!(
       agency: agency,
+      request: request,
       direction: "outbound",
       from_phone: agency.sms_phone_number,
       to_phone: to_phone,

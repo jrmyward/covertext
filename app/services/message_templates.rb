@@ -47,4 +47,16 @@ module MessageTemplates
   INVALID_SELECTION = <<~TEXT.strip
     Invalid selection. Please reply with a valid number or MENU to return to the main menu.
   TEXT
+
+  EXPIRE_POLICY_MENU = <<~TEXT.strip
+    Select which policy you'd like to check:
+
+    %{options}
+
+    Reply with the number, or MENU to go back.
+  TEXT
+
+  EXPIRE_DELIVERY = <<~TEXT.strip
+    Your policy for %{label} expires on %{expires_on}. Reply MENU for more options.
+  TEXT
 end
