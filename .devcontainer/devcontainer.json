@@ -1,3 +1,5 @@
+// For format details, see https://containers.dev/implementors/json_reference/.
+// For config options, see the README at: https://github.com/devcontainers/templates/tree/main/src/ruby
 {
   "name": "covertext",
   "dockerComposeFile": "compose.yaml",
@@ -7,47 +9,28 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/rails/devcontainer/features/postgres-client:1": {}
+    "ghcr.io/rails/devcontainer/features/activestorage": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {"moby":false},
+    "ghcr.io/rails/devcontainer/features/postgres-client": {}
+  },
+
+  "containerEnv": {
+    "CAPYBARA_SERVER_PORT": "45678",
+    "SELENIUM_HOST": "selenium",
+    "KAMAL_REGISTRY_PASSWORD": "$KAMAL_REGISTRY_PASSWORD",
+    "DB_HOST": "postgres"
   },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [3000, 5432],
 
-  // Configure port attributes
-  "portsAttributes": {
-    "3000": {
-      "label": "Rails Server",
-      "onAutoForward": "notify"
-    },
-    "5432": {
-      "label": "PostgreSQL"
-    }
-  },
+  // Configure tool-specific properties.
+  // "customizations": {},
+
+  // Uncomment to connect as root instead. More info: https://containers.dev/implementors/json_reference/#remoteUser.
+  // "remoteUser": "root",
+
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "bin/setup",
-
-  // Configure tool-specific properties.
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "rebornix.Ruby",
-        "Shopify.ruby-lsp",
-        "KoichiSasada.vscode-rdbg",
-        "bradlc.vscode-tailwindcss",
-        "eamodio.gitlens"
-      ],
-      "settings": {
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "Shopify.ruby-lsp",
-        "[ruby]": {
-          "editor.defaultFormatter": "Shopify.ruby-lsp",
-          "editor.formatOnSave": true
-        }
-      }
-    }
-  },
-
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  "remoteUser": "vscode"
+  "postCreateCommand": "bin/setup --skip-server"
 }
