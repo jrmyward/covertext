@@ -1,0 +1,6 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "bin/rails": true,
+    "bin/ci": true
+  }
+}

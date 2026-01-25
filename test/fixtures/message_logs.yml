@@ -1,0 +1,8 @@
+inbound_message:
+  agency: reliable
+  request: card_request
+  direction: inbound
+  from_phone: "+15552001001"
+  to_phone: "+15551234567"
+  body: "Can I get my insurance card?"
+  media_count: 0

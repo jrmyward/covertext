@@ -1,0 +1,4 @@
+card_delivery:
+  request: card_request
+  method: mms
+  status: queued

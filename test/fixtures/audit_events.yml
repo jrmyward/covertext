@@ -1,0 +1,5 @@
+request_created:
+  agency: reliable
+  request: card_request
+  event_type: request.created
+  metadata: {}

@@ -1,0 +1,15 @@
+alice_honda_card:
+  policy: alice_honda
+  kind: auto_id_card
+
+alice_toyota_card:
+  policy: alice_toyota
+  kind: auto_id_card
+
+bob_chevy_card:
+  policy: bob_chevy
+  kind: auto_id_card
+
+charlie_tesla_card:
+  policy: charlie_tesla
+  kind: auto_id_card
