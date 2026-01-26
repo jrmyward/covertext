@@ -15,10 +15,15 @@ module TwilioClient
           create_stub_client
         else
           # Use real Twilio client
-          Twilio::REST::Client.new(
-            ENV.fetch("TWILIO_ACCOUNT_SID"),
-            ENV.fetch("TWILIO_AUTH_TOKEN")
-          )
+          # Try Rails credentials first, fall back to ENV
+          account_sid = Rails.application.credentials.dig(:twilio, :account_sid) || ENV["TWILIO_ACCOUNT_SID"]
+          auth_token = Rails.application.credentials.dig(:twilio, :auth_token) || ENV["TWILIO_AUTH_TOKEN"]
+
+          unless account_sid && auth_token
+            raise "Twilio credentials not configured. Add to credentials.yml.enc or set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN env vars."
+          end
+
+          Twilio::REST::Client.new(account_sid, auth_token)
         end
       end
     end

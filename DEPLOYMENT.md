@@ -66,9 +66,6 @@ KAMAL_REGISTRY_PASSWORD=ghp_your_token_here
 # Rails master key (from config/master.key)
 RAILS_MASTER_KEY=$(cat config/master.key)
 
-# Twilio credentials
-TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
-
 # Postgres password (generate a strong password)
 POSTGRES_PASSWORD=your_strong_postgres_password_here
 EOF
@@ -77,6 +74,34 @@ chmod 600 .kamal/secrets
 ```
 
 **Important**: `.kamal/secrets` is in `.gitignore` - never commit it!
+
+### Configure Twilio Credentials
+
+**Recommended: Use Rails Encrypted Credentials**
+
+Edit production credentials:
+```bash
+bin/rails credentials:edit --environment production
+```
+
+Add your Twilio credentials:
+```yaml
+twilio:
+  account_sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  auth_token: your_auth_token_here
+```
+
+Save and exit. The encrypted file is committed to git, but you need to securely share `config/credentials/production.key` with your team.
+
+**Alternative: Use Environment Variables**
+
+If you prefer ENV vars, add to `.kamal/secrets`:
+```bash
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+```
+
+The initializer checks Rails credentials first, then falls back to ENV vars.
 
 ## 3. Initial Setup
 

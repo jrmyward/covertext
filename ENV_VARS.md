@@ -14,9 +14,20 @@
   - Example: `postgres://postgres:password@covertext-postgres:5432/covertext_production`
 
 ### Twilio (Phase 1+)
+**Recommended: Use Rails Encrypted Credentials**
+- Edit: `bin/rails credentials:edit --environment production`
+- Add:
+  ```yaml
+  twilio:
+    account_sid: ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    auth_token: your_auth_token_here
+  ```
+
+**Alternative: Environment Variables**
 - `TWILIO_ACCOUNT_SID` - Your Twilio Account SID (from Twilio Console)
 - `TWILIO_AUTH_TOKEN` - Your Twilio Auth Token (secret, from Twilio Console)
-- `TWILIO_PHONE_NUMBER` - Format: +15551234567 (optional if using agency.sms_phone_number)
+
+The initializer checks Rails credentials first, then falls back to ENV vars.
 
 ### Background Jobs
 - `SOLID_QUEUE_IN_PUMA` - Set to "true" to run jobs in Puma process (default for single server)

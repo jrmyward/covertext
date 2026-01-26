@@ -28,8 +28,10 @@ registry:
 env:
   secret:
     - RAILS_MASTER_KEY
-    - TWILIO_ACCOUNT_SID
-    - TWILIO_AUTH_TOKEN
+    # Twilio credentials (optional if using Rails encrypted credentials)
+    # Uncomment if not using config/credentials/production.yml.enc
+    # - TWILIO_ACCOUNT_SID
+    # - TWILIO_AUTH_TOKEN
   clear:
     RAILS_ENV: production
     APP_HOST: staging.covertext.app
