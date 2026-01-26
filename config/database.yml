@@ -77,6 +77,8 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    # Use DATABASE_URL if set (Kamal deployment), otherwise fall back to individual env vars
+    url: <%= ENV["DATABASE_URL"] %>
     database: covertext_production
     username: covertext
     password: <%= ENV["COVERTEXT_DATABASE_PASSWORD"] %>

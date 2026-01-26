@@ -54,7 +54,24 @@ Phase 4 – Insurance card fulfillment (MMS)
 Phase 5 – Policy expiration flow
 Phase 6 – Admin dashboard (read-only)
 Phase 7 – Hardening & polish
+## Deployment
 
+This application is configured for deployment using Kamal to a staging environment.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+
+Quick start:
+```bash
+# Configure secrets
+cp .kamal/secrets-example .kamal/secrets
+# Edit .kamal/secrets with your actual values
+
+# Update config/deploy.yml with your server IP and GitHub username
+
+# Deploy
+kamal setup
+kamal deploy
+```
 When I say “Implement Phase X only” you must:
 - Touch only the code required for that phase
 - Not implement future phases early
