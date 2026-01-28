@@ -54,6 +54,36 @@ Phase 4 – Insurance card fulfillment (MMS)
 Phase 5 – Policy expiration flow
 Phase 6 – Admin dashboard (read-only)
 Phase 7 – Hardening & polish
+Phase M1 – Marketing & Monetization ✅ COMPLETE
+- Public marketing homepage
+- Self-serve agency signup with Stripe
+- Subscription management & billing page
+- Plan gating (active subscription + live_enabled flag)
+
+See [STRIPE_SETUP.md](STRIPE_SETUP.md) for Stripe configuration details.
+
+## Getting Started
+
+### Development
+```bash
+bin/setup  # Install dependencies and setup database
+bin/dev    # Start development server (Rails + Tailwind CSS watcher)
+```
+
+### Access the Application
+- **Marketing Homepage**: http://localhost:3000/
+- **Signup**: http://localhost:3000/signup
+- **Admin Login**: http://localhost:3000/login
+  - Email: john@reliableinsurance.example
+  - Password: password123
+
+### Testing
+```bash
+bin/rails test              # Run all tests
+bin/rails test:system       # Run system tests (optional)
+bin/ci                      # Run full CI suite locally
+```
+
 ## Deployment
 
 This application is configured for deployment using Kamal to a staging environment.

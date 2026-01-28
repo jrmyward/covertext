@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - CoverText</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+</head>
+<body class="h-full bg-base-100">
+  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <h2 class="text-center text-3xl font-bold text-primary">CoverText</h2>
+        <h3 class="mt-6 text-center text-2xl font-bold">Start Your Pilot</h3>
+        <p class="mt-2 text-center text-sm text-base-content/60">
+          Sign up and subscribe to get started
+        </p>
+      </div>
+
+      <%= form_with model: @agency, url: signup_path, class: "mt-8 space-y-6" do |f| %>
+        <% if @agency.errors.any? %>
+          <div class="alert alert-error">
+            <div>
+              <h3 class="font-bold">Please fix the following errors:</h3>
+              <ul class="list-disc list-inside">
+                <% @agency.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        <% end %>
+
+        <div class="rounded-md shadow-sm space-y-4">
+          <!-- Agency Details -->
+          <div class="form-control">
+            <%= f.label :name, "Agency Name", class: "label" %>
+            <%= f.text_field :name, class: "input input-bordered w-full", required: true, placeholder: "Acme Insurance Agency" %>
+          </div>
+
+          <div class="form-control">
+            <%= f.label :sms_phone_number, "Agency Phone Number", class: "label" %>
+            <%= f.text_field :sms_phone_number, class: "input input-bordered w-full", required: true, placeholder: "+1 555-123-4567" %>
+            <label class="label">
+              <span class="label-text-alt">This will be your dedicated SMS number (we'll provision it)</span>
+            </label>
+          </div>
+
+          <!-- User Details -->
+          <div class="divider">Admin User</div>
+
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="form-control">
+              <%= label_tag :user_first_name, "First Name", class: "label" %>
+              <%= text_field_tag :user_first_name, nil, class: "input input-bordered w-full", required: true, placeholder: "Jane" %>
+            </div>
+
+            <div class="form-control">
+              <%= label_tag :user_last_name, "Last Name", class: "label" %>
+              <%= text_field_tag :user_last_name, nil, class: "input input-bordered w-full", required: true, placeholder: "Smith" %>
+            </div>
+          </div>
+
+          <div class="form-control">
+            <%= label_tag :user_email, "Email", class: "label" %>
+            <%= email_field_tag :user_email, nil, class: "input input-bordered w-full", required: true, placeholder: "admin@acmeinsurance.com" %>
+          </div>
+
+          <div class="form-control">
+            <%= label_tag :user_password, "Password", class: "label" %>
+            <%= password_field_tag :user_password, nil, class: "input input-bordered w-full", required: true, minlength: 8 %>
+            <label class="label">
+              <span class="label-text-alt">Minimum 8 characters</span>
+            </label>
+          </div>
+
+          <!-- Plan Selection -->
+          <div class="divider">Choose Your Plan</div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer border rounded-lg p-4 bg-base-200">
+              <%= radio_button_tag :plan, "pilot", true, class: "radio radio-primary" %>
+              <span class="flex-1 ml-3">
+                <span class="label-text font-bold">Pilot - $49/month</span>
+                <br>
+                <span class="label-text-alt">Perfect for getting started</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label cursor-pointer border rounded-lg p-4 bg-base-200">
+              <%= radio_button_tag :plan, "growth", false, class: "radio radio-primary" %>
+              <span class="flex-1 ml-3">
+                <span class="label-text font-bold">Growth - $99/month</span>
+                <br>
+                <span class="label-text-alt">Higher volume, premium support</span>
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <%= f.submit "Continue to Payment", class: "btn btn-primary w-full btn-lg" %>
+        </div>
+
+        <div class="text-center text-sm">
+          <p class="text-base-content/60">
+            You'll be redirected to Stripe to complete payment setup.
+            Cancel anytime.
+          </p>
+          <p class="mt-2">
+            <%= link_to "← Back to Homepage", root_path, class: "link link-primary" %>
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</body>
+</html>

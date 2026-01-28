@@ -5,10 +5,17 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
+  # Marketing & Signup
+  root "marketing#index"
+  get "signup", to: "registrations#new"
+  post "signup", to: "registrations#create"
+  get "signup/success", to: "registrations#success", as: :signup_success
+
   # Twilio webhooks
   namespace :webhooks do
     post "twilio/inbound", to: "twilio_inbound#create"
     post "twilio/status", to: "twilio_status#create"
+    post "stripe", to: "stripe_webhooks#create"
   end
 
   # Public document access (for Twilio MMS media URLs)
@@ -19,15 +26,13 @@ Rails.application.routes.draw do
   # Admin dashboard
   namespace :admin do
     resources :requests, only: [ :index, :show ]
+    get "billing", to: "billing#show"
   end
 
   # Authentication
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
-
-  # Root path
-  root "admin/requests#index"
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest

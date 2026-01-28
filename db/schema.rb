@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_25_234410) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_28_164254) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,11 +44,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_25_234410) do
 
   create_table "agencies", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "live_enabled", default: false, null: false
     t.string "name", null: false
+    t.string "plan_name"
     t.jsonb "settings", default: {}
     t.string "sms_phone_number", null: false
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.string "subscription_status"
     t.datetime "updated_at", null: false
     t.index ["sms_phone_number"], name: "index_agencies_on_sms_phone_number", unique: true
+    t.index ["stripe_customer_id"], name: "index_agencies_on_stripe_customer_id", unique: true
+    t.index ["stripe_subscription_id"], name: "index_agencies_on_stripe_subscription_id", unique: true
   end
 
   create_table "audit_events", force: :cascade do |t|

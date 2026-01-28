@@ -9,4 +9,16 @@ class Agency < ApplicationRecord
 
   validates :name, presence: true
   validates :sms_phone_number, presence: true, uniqueness: true
+  validates :stripe_customer_id, uniqueness: true, allow_nil: true
+  validates :stripe_subscription_id, uniqueness: true, allow_nil: true
+  validates :subscription_status, inclusion: { in: %w[active canceled incomplete incomplete_expired past_due trialing unpaid paused] }, allow_nil: true
+
+  # Subscription status checks
+  def subscription_active?
+    subscription_status == "active"
+  end
+
+  def can_go_live?
+    subscription_active? && live_enabled?
+  end
 end

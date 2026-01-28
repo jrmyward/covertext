@@ -538,10 +538,10 @@ CoverText uses **SQLite for Solid Cache, Solid Queue, and Solid Cable** instead 
 
 ### Why SQLite for Cache/Queue/Cable?
 
-✅ **Performance**: Faster than Postgres for simple read/write operations (no network overhead)  
-✅ **Cost**: Smaller managed Postgres needed (only app data, not cache/queue churn)  
-✅ **Simplicity**: No Redis, no connection pooling issues, no additional services  
-✅ **Rails 8 Native**: This is the default, battle-tested configuration  
+✅ **Performance**: Faster than Postgres for simple read/write operations (no network overhead)
+✅ **Cost**: Smaller managed Postgres needed (only app data, not cache/queue churn)
+✅ **Simplicity**: No Redis, no connection pooling issues, no additional services
+✅ **Rails 8 Native**: This is the default, battle-tested configuration
 
 ### Database Architecture
 

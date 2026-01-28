@@ -25,6 +25,9 @@ gem "bcrypt", "~> 3.1.7"
 # Twilio SDK for SMS/MMS
 gem "twilio-ruby", "~> 7.3"
 
+# Stripe for subscription billing
+gem "stripe", "~> 13.4"
+
 gem "heroicon"
 gem "view_component"
 
@@ -71,4 +74,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Mock HTTP requests in tests
+  gem "webmock"
 end

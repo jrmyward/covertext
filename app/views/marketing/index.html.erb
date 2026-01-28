@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoverText - Automated Insurance Client Service via SMS</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+</head>
+<body class="h-full bg-base-100">
+  <!-- Hero Section -->
+  <div class="hero min-h-screen bg-gradient-to-br from-primary/10 via-base-100 to-secondary/10">
+    <div class="hero-content text-center max-w-4xl px-4">
+      <div>
+        <!-- Logo/Brand -->
+        <h1 class="text-5xl font-bold mb-6 text-primary">CoverText</h1>
+
+        <!-- Headline -->
+        <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+          Let Clients Text for Insurance Cards — Not Call Your Staff
+        </h2>
+
+        <!-- Subhead -->
+        <p class="text-xl md:text-2xl mb-8 text-base-content/80 leading-relaxed max-w-3xl mx-auto">
+          CoverText automates routine insurance service requests like ID cards and policy expirations through secure, compliant SMS.
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <%= link_to "Start a Pilot", signup_path, class: "btn btn-primary btn-lg" %>
+          <a href="mailto:hello@covertext.io" class="btn btn-outline btn-lg">Request a Demo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What CoverText Does -->
+  <div class="bg-base-200 py-20">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <h3 class="text-3xl font-bold text-center mb-12">What CoverText Does</h3>
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <div class="text-4xl mb-4">📱</div>
+            <h4 class="card-title">Clients Text Your Number</h4>
+            <p>Your agency gets a dedicated SMS number. Clients text it just like they'd call.</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <div class="text-4xl mb-4">⚡</div>
+            <h4 class="card-title">Automatic Fulfillment</h4>
+            <p>CoverText identifies and fulfills common requests instantly, no manual work required.</p>
+          </div>
+        </div>
+        <div class="card bg-base-100 shadow-lg">
+          <div class="card-body">
+            <div class="text-4xl mb-4">📋</div>
+            <h4 class="card-title">Full Audit Trail</h4>
+            <p>Every request is logged and auditable. You stay in control of your client data.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What It Handles -->
+  <div class="py-20">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h3 class="text-3xl font-bold text-center mb-12">What It Handles</h3>
+      <div class="space-y-4">
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">✅</div>
+          <div>
+            <h4 class="font-bold text-lg">Insurance ID Cards</h4>
+            <p class="text-base-content/70">Clients receive their policy documents via MMS instantly</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">✅</div>
+          <div>
+            <h4 class="font-bold text-lg">Policy Expiration Lookups</h4>
+            <p class="text-base-content/70">Quick answers about when policies expire</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">✅</div>
+          <div>
+            <h4 class="font-bold text-lg">Graceful Fallback</h4>
+            <p class="text-base-content/70">Unsupported requests get a helpful "we'll call you" response</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What It Does NOT Do -->
+  <div class="bg-base-200 py-20">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h3 class="text-3xl font-bold text-center mb-4">What CoverText Does NOT Do</h3>
+      <p class="text-center text-base-content/70 mb-12">We're intentionally narrow to stay simple and compliant</p>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="flex items-start gap-3">
+          <div class="text-xl">❌</div>
+          <div><strong>No policy changes</strong> — those require agent approval</div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="text-xl">❌</div>
+          <div><strong>No billing</strong> — payment processing stays with you</div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="text-xl">❌</div>
+          <div><strong>No underwriting</strong> — quotes and risk assessment aren't automated</div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="text-xl">❌</div>
+          <div><strong>No carrier integrations</strong> — we work with your existing data</div>
+        </div>
+        <div class="flex items-start gap-3">
+          <div class="text-xl">❌</div>
+          <div><strong>No client portal</strong> — SMS is the interface, period</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <div class="py-20">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <h3 class="text-3xl font-bold text-center mb-12">How It Works</h3>
+      <div class="grid md:grid-cols-4 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
+          <h4 class="font-bold mb-2">Client Texts</h4>
+          <p class="text-sm text-base-content/70">They send a message to your agency number</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
+          <h4 class="font-bold mb-2">CoverText Identifies</h4>
+          <p class="text-sm text-base-content/70">Intent is detected and the client is matched</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
+          <h4 class="font-bold mb-2">Instant Delivery</h4>
+          <p class="text-sm text-base-content/70">Document or answer is sent automatically</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
+          <h4 class="font-bold mb-2">Staff Stays Focused</h4>
+          <p class="text-sm text-base-content/70">Your team works on high-value tasks instead</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compliance & Trust -->
+  <div class="bg-base-200 py-20">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <h3 class="text-3xl font-bold text-center mb-12">Compliance & Trust</h3>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">🔒</div>
+          <div>
+            <h4 class="font-bold text-lg">STOP / START / HELP Supported</h4>
+            <p class="text-base-content/70">Full compliance with SMS regulations</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">🚫</div>
+          <div>
+            <h4 class="font-bold text-lg">Opt-Out Enforcement</h4>
+            <p class="text-base-content/70">Clients can opt out anytime, automatically honored</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">📊</div>
+          <div>
+            <h4 class="font-bold text-lg">Full Audit Trail</h4>
+            <p class="text-base-content/70">Every message and action is logged</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="text-2xl">🏢</div>
+          <div>
+            <h4 class="font-bold text-lg">You Own Your Data</h4>
+            <p class="text-base-content/70">Your agency data stays yours, always</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="py-20">
+    <div class="container mx-auto px-4 max-w-3xl text-center">
+      <h3 class="text-3xl font-bold mb-8">Simple, Transparent Pricing</h3>
+      <div class="card bg-base-200 shadow-xl max-w-md mx-auto">
+        <div class="card-body">
+          <div class="text-5xl font-bold text-primary mb-2">$49<span class="text-2xl text-base-content/60">/month</span></div>
+          <p class="text-xl mb-4">Pilot Plan</p>
+          <p class="text-base-content/70 mb-6">Get started with automated client service. Cancel anytime.</p>
+          <%= link_to "Start Your Pilot", signup_path, class: "btn btn-primary btn-lg" %>
+        </div>
+      </div>
+      <p class="text-sm text-base-content/60 mt-8">Need higher volume? Contact us for Growth pricing ($99/month)</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer footer-center p-10 bg-base-200 text-base-content">
+    <div>
+      <p class="font-bold text-lg">CoverText</p>
+      <p>Automated insurance client service via SMS</p>
+    </div>
+    <div>
+      <div class="grid grid-flow-col gap-4">
+        <a href="mailto:hello@covertext.io" class="link link-hover">Contact</a>
+        <a href="#" class="link link-hover">Privacy Policy</a>
+        <a href="#" class="link link-hover">Terms of Service</a>
+      </div>
+    </div>
+    <div>
+      <p>© <%= Time.current.year %> CoverText. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
