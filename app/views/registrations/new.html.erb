@@ -1,15 +1,6 @@
-<!DOCTYPE html>
-<html lang="en" class="h-full">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - CoverText</title>
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
-  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-</head>
-<body class="h-full bg-base-100">
-  <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+<% content_for :title, "Sign Up - CoverText" %>
+
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
         <h2 class="text-center text-3xl font-bold text-primary">CoverText</h2>
@@ -118,5 +109,3 @@
       <% end %>
     </div>
   </div>
-</body>
-</html>
