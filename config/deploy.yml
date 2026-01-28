@@ -18,7 +18,7 @@ destinations:
     servers:
       web:
         hosts:
-          - 1.2.3.4  # Replace with staging server IP
+          - 159.65.70.168  # Staging droplet
     volumes:
       - "/var/lib/covertext/staging/db:/rails/db"
       - "/var/lib/covertext/staging/storage:/rails/storage"
@@ -37,7 +37,7 @@ destinations:
       postgres:
         service: covertext-postgres-staging
         image: postgres:16
-        host: 1.2.3.4  # Same as web server
+        host: 159.65.70.168  # Same as web server
         port: 127.0.0.1:5432:5432
         env:
           clear:
