@@ -83,10 +83,10 @@ staging:
   primary: &primary_staging
     <<: *default
     # Use DATABASE_URL if set (Kamal deployment), otherwise fall back to individual env vars
-    url: <%= ENV["DATABASE_URL"] %>
+    url: <%= Rails.application.credentials.dig(:database, :url) || ENV["DATABASE_URL"] %>
     database: covertext_staging
-    username: postgres
-    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    username: <%= Rails.application.credentials.dig(:database, :username) || ENV["POSTGRES_USER"] || "postgres" %>
+    password: <%= Rails.application.credentials.dig(:database, :password) || ENV["POSTGRES_PASSWORD"] %>
   # Use SQLite for Solid trifecta (faster, cheaper, simpler than Postgres)
   cache:
     adapter: sqlite3
@@ -105,10 +105,10 @@ production:
   primary: &primary_production
     <<: *default
     # Use DATABASE_URL if set (Kamal deployment), otherwise fall back to individual env vars
-    url: <%= ENV["DATABASE_URL"] %>
+    url: <%= Rails.application.credentials.dig(:database, :url) || ENV["DATABASE_URL"] %>
     database: covertext_production
-    username: covertext
-    password: <%= ENV["COVERTEXT_DATABASE_PASSWORD"] %>
+    username: <%= Rails.application.credentials.dig(:database, :username) || ENV["DATABASE_USER"] || "covertext" %>
+    password: <%= Rails.application.credentials.dig(:database, :password) || ENV["COVERTEXT_DATABASE_PASSWORD"] %>
   # Use SQLite for Solid trifecta (faster, cheaper, simpler than Postgres)
   cache:
     adapter: sqlite3
