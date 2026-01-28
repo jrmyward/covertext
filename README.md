@@ -60,7 +60,12 @@ Phase M1 – Marketing & Monetization ✅ COMPLETE
 - Subscription management & billing page
 - Plan gating (active subscription + live_enabled flag)
 
-See [STRIPE_SETUP.md](STRIPE_SETUP.md) for Stripe configuration details.
+## Documentation
+
+- **[Stripe Setup](docs/STRIPE_SETUP.md)** - Stripe integration and configuration
+- **[Credentials Setup](docs/CREDENTIALS_SETUP.md)** - Rails credentials configuration guide
+- **[Deployment](docs/DEPLOYMENT.md)** - Kamal deployment instructions
+- **[Environment Variables](docs/ENV_VARS.md)** - Environment variable reference
 
 ## Getting Started
 
@@ -86,22 +91,12 @@ bin/ci                      # Run full CI suite locally
 
 ## Deployment
 
-This application is configured for deployment using Kamal to a staging environment.
+This application is configured for deployment using Kamal.
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed deployment instructions.
 
-Quick start:
-```bash
-# Configure secrets
-cp .kamal/secrets-example .kamal/secrets
-# Edit .kamal/secrets with your actual values
+## Contributing
 
-# Update config/deploy.yml with your server IP and GitHub username
-
-# Deploy
-kamal setup
-kamal deploy
-```
 When I say “Implement Phase X only” you must:
 - Touch only the code required for that phase
 - Not implement future phases early

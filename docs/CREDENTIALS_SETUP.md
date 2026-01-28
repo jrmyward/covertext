@@ -133,7 +133,7 @@ Before committing, ensure:
 - [ ] `.gitignore` includes `config/credentials/development.key` (already done)
 - [ ] Only `config/credentials/*.yml.enc` files are committed (encrypted)
 - [ ] Never commit `*.key` files
-- [ ] `STRIPE_SETUP.md` documents the full integration
+- [ ] `docs/STRIPE_SETUP.md` documents the full integration
 
 ## Next Steps
 
