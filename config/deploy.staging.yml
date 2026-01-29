@@ -24,6 +24,8 @@ env:
     APP_HOST: staging.covertext.app
     APP_PROTOCOL: https
     SOLID_QUEUE_IN_PUMA: false
+    # Use async mode (no forking) for SQLite compatibility
+    SOLID_QUEUE_SUPERVISOR_MODE: async
   secret:
     - RAILS_MASTER_KEY
     - DATABASE_URL

@@ -14,16 +14,8 @@ development:
 test:
   <<: *default
 
-# Use no forking (processes: 0) for SQLite to avoid database locking
 staging:
-  dispatchers:
-    - polling_interval: 1
-      batch_size: 500
-  workers:
-    - queues: "*"
-      threads: 3
-      processes: 0
-      polling_interval: 0.1
+  <<: *default
 
 production:
   <<: *default
