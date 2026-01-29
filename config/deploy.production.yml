@@ -7,11 +7,6 @@ servers:
     hosts:
       - 5.6.7.8  # Replace with production server IP
 
-# Host directories that should be created and mounted
-directories:
-  - production_db:/var/lib/covertext/production/db
-  - production_storage:/var/lib/covertext/production/storage
-
 volumes:
   - "/var/lib/covertext/production/db:/rails/db"
   - "/var/lib/covertext/production/storage:/rails/storage"
@@ -30,7 +25,11 @@ proxy:
   ssl: true
   host: covertext.app
 
-# No accessories in production - using Digital Ocean managed Postgres
-# Database connection via Rails encrypted credentials:
-# bin/rails credentials:edit --environment production
+# Aliases are triggered with "kamal <alias>"
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  setup-volumes: host exec --hosts 5.6.7.8 "mkdir -p /var/lib/covertext/production/db /var/lib/covertext/production/storage && chown -R 1000:1000 /var/lib/covertext/production"
 # Add: database: { url: "postgres://..." }

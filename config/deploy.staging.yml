@@ -10,11 +10,6 @@ servers:
     hosts:
       - 159.65.70.168
 
-# Host directories that should be created and mounted
-directories:
-  - staging_db:/var/lib/covertext/staging/db
-  - staging_storage:/var/lib/covertext/staging/storage
-
 volumes:
   - "/var/lib/covertext/staging/db:/rails/db"
   - "/var/lib/covertext/staging/storage:/rails/storage"
@@ -65,6 +60,7 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  setup-volumes: host exec --hosts 159.65.70.168 "mkdir -p /var/lib/covertext/staging/db /var/lib/covertext/staging/storage && chown -R 1000:1000 /var/lib/covertext/staging"
 
 # Configure the image builder
 builder:
