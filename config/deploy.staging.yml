@@ -9,6 +9,10 @@ servers:
   web:
     hosts:
       - 159.65.70.168
+  worker:
+    hosts:
+      - 159.65.70.168
+    cmd: bin/rails solid_queue:start
 
 volumes:
   - "/var/lib/covertext/staging/data:/rails/data"
@@ -19,9 +23,10 @@ env:
     RAILS_ENV: staging
     APP_HOST: staging.covertext.app
     APP_PROTOCOL: https
-    SOLID_QUEUE_IN_PUMA: true
+    SOLID_QUEUE_IN_PUMA: false
   secret:
     - RAILS_MASTER_KEY
+    - DATABASE_URL
     - POSTGRES_PASSWORD
 
 # SSL configuration
@@ -35,7 +40,7 @@ accessories:
     service: covertext-postgres-staging
     image: postgres:16
     host: 159.65.70.168
-    port: 127.0.0.1:5432:5432
+    port: 5432
     env:
       clear:
         POSTGRES_USER: postgres
@@ -59,8 +64,9 @@ aliases:
   console: app exec --interactive --reuse "bin/rails console"
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
+  worker-logs: app logs -f --roles worker
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
-  setup-volumes: host exec --hosts 159.65.70.168 "mkdir -p /var/lib/covertext/staging/db /var/lib/covertext/staging/storage && chown -R 1000:1000 /var/lib/covertext/staging"
+  db-prepare: app exec "bin/rails db:prepare"
 
 # Configure the image builder
 builder:
