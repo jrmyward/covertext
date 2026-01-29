@@ -20,10 +20,9 @@ env:
     APP_HOST: staging.covertext.app
     APP_PROTOCOL: https
     SOLID_QUEUE_IN_PUMA: true
-    # Postgres accessory runs on same server
-    DATABASE_URL: postgres://postgres:password@covertext-postgres-staging:5432/covertext_staging
   secret:
     - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
 
 # SSL configuration
 proxy:

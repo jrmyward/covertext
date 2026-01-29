@@ -82,11 +82,11 @@ test:
 staging:
   primary: &primary_staging
     <<: *default
-    # Use DATABASE_URL if set (Kamal deployment), otherwise fall back to individual env vars
-    url: <%= Rails.application.credentials.dig(:database, :url) || ENV["DATABASE_URL"] %>
     database: covertext_staging
-    username: <%= Rails.application.credentials.dig(:database, :username) || ENV["POSTGRES_USER"] || "postgres" %>
-    password: <%= Rails.application.credentials.dig(:database, :password) || ENV["POSTGRES_PASSWORD"] %>
+    username: postgres
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
+    host: covertext-postgres-staging
+    port: 5432
   # Use SQLite for Solid trifecta (faster, cheaper, simpler than Postgres)
   cache:
     adapter: sqlite3
