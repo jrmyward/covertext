@@ -23,6 +23,16 @@ sqlite: &sqlite
   adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
+  # Enable WAL mode for better concurrency (allows reads during writes)
+  # Required when web and worker containers access same SQLite file
+  flags:
+    - SQLITE_OPEN_READWRITE
+    - SQLITE_OPEN_CREATE
+    - SQLITE_OPEN_URI
+  variables:
+    pragma_journal_mode: WAL
+    pragma_synchronous: NORMAL
+    pragma_busy_timeout: 5000
 
 
 development:
