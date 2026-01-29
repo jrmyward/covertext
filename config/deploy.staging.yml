@@ -10,6 +10,11 @@ servers:
     hosts:
       - 159.65.70.168
 
+# Host directories that should be created and mounted
+directories:
+  - staging_db:/var/lib/covertext/staging/db
+  - staging_storage:/var/lib/covertext/staging/storage
+
 volumes:
   - "/var/lib/covertext/staging/db:/rails/db"
   - "/var/lib/covertext/staging/storage:/rails/storage"

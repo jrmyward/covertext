@@ -7,6 +7,11 @@ servers:
     hosts:
       - 5.6.7.8  # Replace with production server IP
 
+# Host directories that should be created and mounted
+directories:
+  - production_db:/var/lib/covertext/production/db
+  - production_storage:/var/lib/covertext/production/storage
+
 volumes:
   - "/var/lib/covertext/production/db:/rails/db"
   - "/var/lib/covertext/production/storage:/rails/storage"
