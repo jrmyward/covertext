@@ -9,6 +9,9 @@ servers:
   web:
     hosts:
       - 159.65.70.168
+    # Increase deploy timeout for Solid Queue startup
+    options:
+      "deploy-timeout": "60s"
 
 volumes:
   - "/var/lib/covertext/staging/data:/rails/data"
