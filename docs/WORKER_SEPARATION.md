@@ -68,6 +68,20 @@ env:
     SOLID_QUEUE_SUPERVISOR_MODE: async
 ```
 
+### Optional: Enable Solid Trifecta in Development
+
+By default, development uses in-memory cache, async jobs, and async cable for fast iteration.
+To test with Solid Cache/Queue/Cable locally, set `SOLID_TRIFECTA=true`:
+
+```bash
+SOLID_TRIFECTA=true bin/dev
+```
+
+When enabled:
+- Cache uses `solid_cache_store`
+- Jobs use `solid_queue`
+- Cable uses `solid_cable`
+
 ### Critical Environment Variables
 
 #### `SOLID_QUEUE_IN_PUMA`

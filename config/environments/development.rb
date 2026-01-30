@@ -26,7 +26,13 @@ Rails.application.configure do
   end
 
   # Change to :null_store to avoid any caching.
-  config.cache_store = :memory_store
+  if ENV["SOLID_TRIFECTA"] == "true"
+    config.cache_store = :solid_cache_store
+    config.active_job.queue_adapter = :solid_queue
+    config.solid_queue.connects_to = { database: { writing: :queue } }
+  else
+    config.cache_store = :memory_store
+  end
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local

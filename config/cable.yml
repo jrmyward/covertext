@@ -3,7 +3,16 @@
 # not a terminal started via bin/rails console! Add "console" to any action or any ERB template view
 # to make the web console appear.
 development:
+  <% if ENV["SOLID_TRIFECTA"] == "true" %>
+  adapter: solid_cable
+  connects_to:
+    database:
+      writing: cable
+  polling_interval: 0.1.seconds
+  message_retention: 1.day
+  <% else %>
   adapter: async
+  <% end %>
 
 test:
   adapter: test
