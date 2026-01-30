@@ -9,10 +9,6 @@ servers:
   web:
     hosts:
       - 159.65.70.168
-  worker:
-    hosts:
-      - 159.65.70.168
-    cmd: bin/rails solid_queue:start
 
 volumes:
   - "/var/lib/covertext/staging/data:/rails/data"
@@ -23,7 +19,7 @@ env:
     RAILS_ENV: staging
     APP_HOST: staging.covertext.app
     APP_PROTOCOL: https
-    SOLID_QUEUE_IN_PUMA: false
+    SOLID_QUEUE_IN_PUMA: true
     # Use async mode (no forking) for SQLite compatibility
     SOLID_QUEUE_SUPERVISOR_MODE: async
   secret:
