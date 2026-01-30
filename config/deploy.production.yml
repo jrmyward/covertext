@@ -8,7 +8,7 @@ servers:
       - 5.6.7.8  # Replace with production server IP
 
 volumes:
-  - "/var/lib/covertext/production/db:/rails/db"
+  - "/var/lib/covertext/production/data:/rails/data"
   - "/var/lib/covertext/production/storage:/rails/storage"
 
 env:
@@ -17,6 +17,7 @@ env:
     APP_HOST: covertext.app
     APP_PROTOCOL: https
     SOLID_QUEUE_IN_PUMA: true
+    SOLID_QUEUE_SUPERVISOR_MODE: async
   secret:
     - RAILS_MASTER_KEY
 
@@ -31,5 +32,5 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
-  setup-volumes: host exec --hosts 5.6.7.8 "mkdir -p /var/lib/covertext/production/db /var/lib/covertext/production/storage && chown -R 1000:1000 /var/lib/covertext/production"
+  setup-volumes: host exec --hosts 5.6.7.8 "mkdir -p /var/lib/covertext/production/data /var/lib/covertext/production/storage && chown -R 1000:1000 /var/lib/covertext/production"
 # Add: database: { url: "postgres://..." }
