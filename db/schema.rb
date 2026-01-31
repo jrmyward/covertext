@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_014143) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_31_230357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "plan_name"
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.string "subscription_status"
+    t.datetime "updated_at", null: false
+    t.index ["stripe_customer_id"], name: "index_accounts_on_stripe_customer_id", unique: true
+    t.index ["stripe_subscription_id"], name: "index_accounts_on_stripe_subscription_id", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
