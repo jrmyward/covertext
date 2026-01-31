@@ -2,7 +2,7 @@
 service: covertext
 
 # Name of the container image (use your-user/app-name on external registries).
-image: ghcr.io/jrmyward/covertext
+image: ghcr.io/workhorse-solutions/covertext
 
 # Deploy to these servers.
 servers:
