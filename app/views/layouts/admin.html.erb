@@ -30,22 +30,22 @@
     </div>
 
     <!-- Subscription & Live Status Banner -->
-    <% if current_agency %>
-      <% unless current_agency.subscription_active? %>
+    <% if current_agency && current_agency.account %>
+      <% unless current_agency.account.subscription_active? %>
         <div class="alert alert-error">
           <div class="flex-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
             </svg>
             <div>
-              <strong>Subscription Issue:</strong> Your subscription is <%= current_agency.subscription_status || 'inactive' %>.
+              <strong>Subscription Issue:</strong> Your subscription is <%= current_agency.account.subscription_status || 'inactive' %>.
               <%= link_to "Update Billing", admin_billing_path, class: "btn btn-sm btn-error ml-2" %>
             </div>
           </div>
         </div>
       <% end %>
 
-      <% if current_agency.subscription_active? && !current_agency.live_enabled? %>
+      <% if current_agency.account.subscription_active? && !current_agency.live_enabled? %>
         <div class="alert alert-info">
           <div class="flex-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">

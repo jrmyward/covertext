@@ -8,10 +8,17 @@ class RegistrationsController < ApplicationController
   end
 
   def create
-    @agency = Agency.new(agency_params)
-    @agency.live_enabled = false # Always start as non-live
+    # Create Account first
+    @account = Account.new(name: agency_params[:name])
 
-    if @agency.save
+    @agency = @account.agencies.build(agency_params)
+    @agency.live_enabled = false # Always start as non-live
+    @agency.active = true
+
+    ActiveRecord::Base.transaction do
+      @account.save!
+      @agency.save!
+
       # Create default user for the agency
       user = @agency.users.create!(
         first_name: params[:user_first_name],
@@ -33,20 +40,21 @@ class RegistrationsController < ApplicationController
         success_url: signup_success_url(session_id: "{CHECKOUT_SESSION_ID}"),
         cancel_url: signup_url,
         metadata: {
+          account_id: @account.id,
           agency_id: @agency.id,
           user_id: user.id
         },
         subscription_data: {
           metadata: {
-            agency_id: @agency.id
+            account_id: @account.id
           }
         }
       )
 
       redirect_to session.url, allow_other_host: true
-    else
-      render :new, status: :unprocessable_entity
     end
+  rescue ActiveRecord::RecordInvalid => e
+    render :new, status: :unprocessable_entity
   rescue Stripe::StripeError => e
     flash[:alert] = "Payment setup failed: #{e.message}"
     render :new, status: :unprocessable_entity
@@ -57,11 +65,17 @@ class RegistrationsController < ApplicationController
 
     begin
       checkout_session = Stripe::Checkout::Session.retrieve(session_id)
-      agency_id = checkout_session.metadata.agency_id
-      agency = Agency.find(agency_id)
 
-      # Update agency with Stripe details
-      agency.update!(
+      # Get account from metadata (fallback to agency for legacy signups)
+      if checkout_session.metadata.account_id
+        account = Account.find(checkout_session.metadata.account_id)
+      else
+        agency = Agency.find(checkout_session.metadata.agency_id)
+        account = agency.account
+      end
+
+      # Update account with Stripe details
+      account.update!(
         stripe_customer_id: checkout_session.customer,
         stripe_subscription_id: checkout_session.subscription,
         subscription_status: "active",
@@ -69,6 +83,7 @@ class RegistrationsController < ApplicationController
       )
 
       # Log the user in
+      agency = account.agencies.first
       user = agency.users.first
       session[:user_id] = user.id
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_31_230357) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_31_231104) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -55,19 +55,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_230357) do
   end
 
   create_table "agencies", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.boolean "live_enabled", default: false, null: false
     t.string "name", null: false
     t.string "phone_sms", null: false
-    t.string "plan_name"
     t.jsonb "settings", default: {}
-    t.string "stripe_customer_id"
-    t.string "stripe_subscription_id"
-    t.string "subscription_status"
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_agencies_on_account_id"
     t.index ["phone_sms"], name: "index_agencies_on_phone_sms", unique: true
-    t.index ["stripe_customer_id"], name: "index_agencies_on_stripe_customer_id", unique: true
-    t.index ["stripe_subscription_id"], name: "index_agencies_on_stripe_subscription_id", unique: true
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -195,6 +192,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_31_230357) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "agencies", "accounts"
   add_foreign_key "audit_events", "agencies"
   add_foreign_key "audit_events", "requests"
   add_foreign_key "clients", "agencies"

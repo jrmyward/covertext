@@ -3,11 +3,12 @@ require "test_helper"
 module Webhooks
   class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     setup do
-      @agency = agencies(:reliable)
-      @agency.update!(
+      @account = accounts(:reliable_group)
+      @account.update!(
         stripe_customer_id: "cus_test_123",
         stripe_subscription_id: "sub_test_123"
       )
+      @agency = agencies(:reliable)
     end
 
     test "handles subscription updated event" do

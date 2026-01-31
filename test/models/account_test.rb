@@ -59,7 +59,5 @@ class AccountTest < ActiveSupport::TestCase
     assert Account.reflect_on_association(:agencies).macro == :has_many
   end
 
-  test "has_many users" do
-    assert Account.reflect_on_association(:users).macro == :has_many
-  end
+  # Test for has_many :users will be added in US-003 when account_id is added to users table
 end

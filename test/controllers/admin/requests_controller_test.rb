@@ -37,9 +37,11 @@ class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
     sign_in(@john)
 
     # Create a request for a different agency
+    other_account = Account.create!(name: "Other Account")
     other_agency = Agency.create!(
       name: "Other Agency",
-      phone_sms: "+15551111111"
+      phone_sms: "+15551111111",
+      account: other_account
     )
     other_request = Request.create!(
       agency: other_agency,

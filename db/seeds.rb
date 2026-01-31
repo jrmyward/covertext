@@ -4,13 +4,22 @@
 
 # Clear existing data
 puts "🧹 Clearing existing data..."
-[ AuditEvent, Delivery, MessageLog, Request, Document, Policy, Client, ConversationSession, User, Agency ].each(&:destroy_all)
+[ AuditEvent, Delivery, MessageLog, Request, Document, Policy, Client, ConversationSession, User, Agency, Account ].each(&:destroy_all)
+
+# Create Account
+puts "🏦 Creating account..."
+account = Account.create!(
+  name: "Reliable Insurance Group",
+  subscription_status: "active"
+)
 
 # Create Agency
 puts "🏢 Creating agency..."
 agency = Agency.create!(
   name: "Reliable Insurance Agency",
-  phone_sms: "+15551234567"  # Placeholder E.164 number for testing
+  phone_sms: "+15551234567",  # Placeholder E.164 number for testing
+  account: account,
+  active: true
 )
 
 # Create admin User
@@ -106,6 +115,7 @@ end
 
 puts "\n✅ Seed data created successfully!"
 puts "\n📊 Summary:"
+puts "  - Accounts: #{Account.count}"
 puts "  - Agencies: #{Agency.count}"
 puts "  - Users: #{User.count}"
 puts "  - Clients: #{Client.count}"

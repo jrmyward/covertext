@@ -4,11 +4,12 @@ module Admin
   class BillingController < ApplicationController
     def show
       @agency = current_user.agency
+      @account = @agency.account
 
-      if @agency.stripe_customer_id
+      if @account&.stripe_customer_id
         # Create Stripe billing portal session
         @portal_session = Stripe::BillingPortal::Session.create(
-          customer: @agency.stripe_customer_id,
+          customer: @account.stripe_customer_id,
           return_url: admin_billing_url
         )
       end
