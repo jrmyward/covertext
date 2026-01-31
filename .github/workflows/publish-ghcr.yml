@@ -1,21 +1,46 @@
 name: Publish Docker image to GHCR
 
 on:
-  push:
-    branches: [ "main" ]
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
   contents: read
   packages: write
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    outputs:
+      version: ${{ steps.vars.outputs.version }}
 
     steps:
-      - name: Checkout
+      - name: Determine deploy version (full SHA)
+        id: vars
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout (exact commit)
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.vars.outputs.version }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -24,19 +49,58 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract image metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=ref,event=branch
-            type=sha
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.vars.outputs.version }}
+            ${{ env.IMAGE }}:main
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    # For workflow_run, github.ref is not refs/heads/main. Use head_branch instead.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.head_branch == 'main' }}
+
+    steps:
+      - name: Checkout (exact commit)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build-and-push.outputs.version }}
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          DEPLOY_SSH_KEY: op://CoverText/deploy_ssh/private key
+          RAILS_MASTER_KEY: op://CoverText/Production/RAILS_MASTER_KEY
+          KAMAL_REGISTRY_PASSWORD: op://CoverText/Production/KAMAL_REGISTRY_PASSWORD
+          DB_HOST: op://CoverText/Production/DB_HOST
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Install kamal
+        run: gem install kamal
+
+      - name: Set up SSH
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "$DEPLOY_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 159.65.110.3 >> ~/.ssh/known_hosts
+
+      - name: Deploy to production (use already-pushed image)
+        env:
+          VERSION: ${{ needs.build-and-push.outputs.version }}
+          RAILS_MASTER_KEY: ${{ env.RAILS_MASTER_KEY }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+        run: |
+          kamal deploy -d production -P --version "$VERSION"

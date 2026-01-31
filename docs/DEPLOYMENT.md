@@ -64,11 +64,11 @@ servers:
     - 159.65.110.3
 
 # Container registry
-image: ghcr.io/jrmyward/covertext
+image: ghcr.io/workhorse-solutions/covertext
 
 registry:
   server: ghcr.io
-  username: jrmyward
+  username: workhorse-solutions
 
 # SSL and domain
 proxy:
