@@ -1,0 +1,21 @@
+## Codebase Patterns
+- Use `DATABASE_URL="postgres://jward@localhost/covertext_test"` for local development (Docker config uses "postgres" host which doesn't work outside container)
+- Account model follows same validation patterns as Agency (stripe_*_id unique allow_nil, subscription_status with inclusion validation)
+
+---
+
+## 2026-01-31 - US-001
+Thread: https://ampcode.com/threads/T-019c164b-fdbb-739c-9338-1995d473784f
+- Created Account model with name, stripe_customer_id, stripe_subscription_id, subscription_status, plan_name
+- Added migration with unique indexes on stripe_customer_id and stripe_subscription_id
+- Account has_many :agencies, has_many :users associations
+- Created comprehensive model tests (11 tests)
+- Files changed:
+  - app/models/account.rb (new)
+  - db/migrate/20260131230357_create_accounts.rb (new)
+  - test/models/account_test.rb (new)
+- **Learnings for future iterations:**
+  - Database connection configured for Docker; use DATABASE_URL env var for local development
+  - Follow existing validation patterns from Agency model for consistency
+  - All CI checks pass: tests (170), rubocop, brakeman
+---
