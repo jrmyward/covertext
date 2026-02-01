@@ -1,5 +1,7 @@
 # CoverText - AI Agent Instructions
 
+**IMPORTANT:** Before starting any work, read [AGENTS.md](../AGENTS.md) for critical codebase patterns, data model conventions, and common gotchas. Update it when you learn new patterns.
+
 ## Project Overview
 CoverText is a Rails 8 B2B SaaS that provides independent insurance agencies with SMS-based client interaction. The text conversation IS the user interface. This is a multi-tenant system using deterministic logic (no AI/LLMs) with automated fulfillment flows.
 

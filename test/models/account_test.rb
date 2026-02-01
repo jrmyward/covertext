@@ -132,4 +132,112 @@ class AccountTest < ActiveSupport::TestCase
     account = Account.create!(name: "No Owner Account")
     assert_nil account.owner
   end
+
+  # in_grace_period? tests
+  test "in_grace_period? returns true when canceled with future end date within 14 days" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 7.days.from_now
+    )
+    assert account.in_grace_period?
+  end
+
+  test "in_grace_period? returns false when subscription is active" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "active",
+      subscription_ends_at: 7.days.from_now
+    )
+    assert_not account.in_grace_period?
+  end
+
+  test "in_grace_period? returns false when subscription_ends_at is nil" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: nil
+    )
+    assert_not account.in_grace_period?
+  end
+
+  test "in_grace_period? returns false when subscription_ends_at is in the past" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 1.day.ago
+    )
+    assert_not account.in_grace_period?
+  end
+
+  test "in_grace_period? returns false when subscription_ends_at is beyond 14 days" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 15.days.from_now
+    )
+    assert_not account.in_grace_period?
+  end
+
+  # read_only? tests
+  test "read_only? returns true when in grace period" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 7.days.from_now
+    )
+    assert account.read_only?
+  end
+
+  test "read_only? returns false when subscription is active" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "active"
+    )
+    assert_not account.read_only?
+  end
+
+  # days_until_lockout tests
+  test "days_until_lockout returns days remaining when in grace period" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 7.days.from_now
+    )
+    assert_equal 7, account.days_until_lockout
+  end
+
+  test "days_until_lockout returns 1 when less than 1 day remains" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "canceled",
+      subscription_ends_at: 12.hours.from_now
+    )
+    assert_equal 1, account.days_until_lockout
+  end
+
+  test "days_until_lockout returns nil when not in grace period" do
+    account = Account.new(
+      name: "Test",
+      subscription_status: "active"
+    )
+    assert_nil account.days_until_lockout
+  end
+
+  # can_access_system? with grace period tests
+  test "can_access_system? returns true during grace period with active agency" do
+    account = accounts(:reliable_group)
+    account.subscription_status = "canceled"
+    account.subscription_ends_at = 7.days.from_now
+    assert account.in_grace_period?
+    assert account.has_active_agency?
+    assert account.can_access_system?
+  end
+
+  test "can_access_system? returns false after grace period expires" do
+    account = accounts(:reliable_group)
+    account.subscription_status = "canceled"
+    account.subscription_ends_at = 1.day.ago
+    assert_not account.can_access_system?
+  end
 end
