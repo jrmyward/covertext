@@ -7,7 +7,7 @@ image: ghcr.io/workhorse-solutions/covertext
 # Deploy to these servers.
 servers:
   web:
-    - 159.65.110.3
+    - 165.227.9.95
   # job:
   #   hosts:
   #     - 192.168.0.1
