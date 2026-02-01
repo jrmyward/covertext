@@ -192,3 +192,22 @@ Thread: https://ampcode.com/threads/T-019c16b7-45e1-704b-a36b-b02b3c89a43d
   - Always use the helper methods instead of duplicating query logic
   - All CI checks pass: tests (186), rubocop, brakeman
 ---
+
+## 2026-01-31 - US-011
+Thread: https://ampcode.com/threads/T-019c16b8-d00c-7129-8e59-6e328a236567
+- Verified RegistrationsController already implements Account + Agency + User signup
+- All acceptance criteria met from prior work in US-002 and US-003:
+  - Creates Account with name from agency name (line 12)
+  - Creates Agency under Account with phone_sms, active: true (lines 14-16)
+  - Creates User under Account with role: 'owner' (lines 23-30)
+  - Passes account_id in Stripe subscription metadata (lines 47-50)
+  - Success action updates Account with Stripe details (lines 78-83)
+  - Auto-login user after successful signup (lines 86-87)
+- Files verified:
+  - app/controllers/registrations_controller.rb (already complete)
+  - test/controllers/registrations_controller_test.rb (4 tests pass)
+- **Learnings for future iterations:**
+  - Earlier stories may already satisfy later acceptance criteria
+  - Check existing implementation before making changes
+  - All CI checks pass: tests (186), rubocop, brakeman
+---
