@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     resources :requests, only: [ :index, :show ]
     get "billing", to: "billing#show"
     resource :account, only: [ :show, :update ]
+    post "dismiss_grace_period_banner", to: "banners#dismiss_grace_period"
   end
 
   # Authentication

@@ -34,7 +34,24 @@
 
     <!-- Subscription & Live Status Banner -->
     <% if current_agency && current_agency.account %>
-      <% unless current_agency.account.subscription_active? %>
+      <% if current_agency.account.in_grace_period? && !session[:grace_period_banner_dismissed] %>
+        <div class="alert alert-warning" id="grace-period-banner" data-controller="banner">
+          <div class="flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <div>
+              <strong>Subscription Expiring:</strong> Your subscription ends in <%= current_agency.account.days_until_lockout %> day<%= current_agency.account.days_until_lockout == 1 ? '' : 's' %>. Your account is currently read-only.
+              <%= link_to "Update Billing", admin_billing_path, class: "btn btn-sm btn-warning ml-2" %>
+            </div>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" data-action="click->banner#dismiss" data-banner-url="<%= admin_dismiss_grace_period_banner_path %>">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      <% elsif !current_agency.account.subscription_active? && !current_agency.account.in_grace_period? %>
         <div class="alert alert-error">
           <div class="flex-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
