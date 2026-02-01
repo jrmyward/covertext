@@ -13,3 +13,11 @@ jane_admin:
   email: jane@acme.example
   password_digest: <%= BCrypt::Password.create('password123', cost: 4) %>
   role: admin
+
+bob_admin:
+  account: reliable_group
+  first_name: Bob
+  last_name: Admin
+  email: bob@reliable.example
+  password_digest: <%= BCrypt::Password.create('password123', cost: 4) %>
+  role: admin
