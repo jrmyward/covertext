@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module Admin
-  class BillingController < ApplicationController
+  class BillingController < BaseController
+    skip_before_action :require_active_subscription
+
     def show
       @account = current_user.account
       @agency = @account.agencies.where(active: true).first
 
       if @account&.stripe_customer_id
-        # Create Stripe billing portal session
         @portal_session = Stripe::BillingPortal::Session.create(
           customer: @account.stripe_customer_id,
           return_url: admin_billing_url
