@@ -1,7 +1,9 @@
 class User < ApplicationRecord
-  belongs_to :agency
+  belongs_to :account
 
   has_secure_password
+
+  ROLES = %w[owner admin].freeze
 
   validates :first_name, presence: true
   validates :last_name, presence: true

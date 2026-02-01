@@ -22,15 +22,15 @@ agency = Agency.create!(
   active: true
 )
 
-# Create admin User
-puts "👤 Creating admin user..."
+# Create owner User
+puts "👤 Creating owner user..."
 user = User.create!(
-  agency: agency,
+  account: account,
   first_name: "John",
-  last_name: "Admin",
+  last_name: "Owner",
   email: "john@reliableinsurance.example",
   password: "password123",
-  role: "admin"
+  role: "owner"
 )
 
 # Create Clients

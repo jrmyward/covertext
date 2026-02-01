@@ -19,14 +19,14 @@ class RegistrationsController < ApplicationController
       @account.save!
       @agency.save!
 
-      # Create default user for the agency
-      user = @agency.users.create!(
+      # Create owner user for the account
+      user = @account.users.create!(
         first_name: params[:user_first_name],
         last_name: params[:user_last_name],
         email: params[:user_email],
         password: params[:user_password],
         password_confirmation: params[:user_password],
-        role: "admin"
+        role: "owner"
       )
 
       # Create Stripe checkout session
@@ -83,8 +83,7 @@ class RegistrationsController < ApplicationController
       )
 
       # Log the user in
-      agency = account.agencies.first
-      user = agency.users.first
+      user = account.users.first
       session[:user_id] = user.id
 
       redirect_to admin_requests_path, notice: "Welcome to CoverText! Your subscription is active."

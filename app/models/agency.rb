@@ -1,7 +1,6 @@
 class Agency < ApplicationRecord
   belongs_to :account
 
-  has_many :users, dependent: :destroy
   has_many :clients, dependent: :destroy
   has_many :conversation_sessions, dependent: :destroy
   has_many :requests, dependent: :destroy

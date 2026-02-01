@@ -60,7 +60,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "John", user.first_name
     assert_equal "Doe", user.last_name
     assert_equal "john@newagency.com", user.email
-    assert_equal agency, user.agency
+    assert_equal account, user.account
+    assert_equal "owner", user.role
 
     assert_redirected_to "https://checkout.stripe.com/test"
   end

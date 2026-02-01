@@ -6,7 +6,7 @@ module Admin
     private
 
     def current_agency
-      @current_agency ||= current_user.agency
+      @current_agency ||= current_user.account.agencies.where(active: true).first
     end
     helper_method :current_agency
   end

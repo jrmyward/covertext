@@ -2,7 +2,7 @@ require "test_helper"
 
 class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @john = users(:john_admin)
+    @john = users(:john_owner)
     @reliable_agency = agencies(:reliable)
   end
 

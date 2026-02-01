@@ -3,8 +3,8 @@
 module Admin
   class BillingController < ApplicationController
     def show
-      @agency = current_user.agency
-      @account = @agency.account
+      @account = current_user.account
+      @agency = @account.agencies.where(active: true).first
 
       if @account&.stripe_customer_id
         # Create Stripe billing portal session

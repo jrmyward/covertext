@@ -1,6 +1,6 @@
 class Account < ApplicationRecord
   has_many :agencies, dependent: :destroy
-  # has_many :users - will be added in US-003 after account_id column exists on users
+  has_many :users, dependent: :destroy
 
   validates :name, presence: true
   validates :stripe_customer_id, uniqueness: true, allow_nil: true

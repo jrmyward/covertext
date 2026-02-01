@@ -3,9 +3,9 @@ require "test_helper"
 module Admin
   class BillingControllerTest < ActionDispatch::IntegrationTest
     setup do
-      @user = users(:john_admin)
+      @user = users(:john_owner)
       @agency = agencies(:reliable)
-      @account = @agency.account
+      @account = @user.account
       sign_in(@user)
     end
 
