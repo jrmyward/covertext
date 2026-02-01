@@ -127,7 +127,7 @@
         "CI passes (`bin/ci`)"
       ],
       "priority": 8,
-      "passes": false,
+      "passes": true,
       "notes": ""
     },
     {
@@ -141,8 +141,8 @@
         "CI passes (`bin/ci`)"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Already implemented in US-003 and US-008"
     },
     {
       "id": "US-010",

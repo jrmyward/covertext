@@ -143,3 +143,40 @@ Thread: https://ampcode.com/threads/T-019c16a3-deae-77fe-b8e4-88f2684644cf
   - When PRD specifies new data model with 2 agencies, existing tests expecting 1 agency need updating
   - All CI checks pass: tests (182), rubocop, brakeman
 ---
+
+## 2026-01-31 - US-008
+Thread: https://ampcode.com/threads/T-019c16aa-5aa9-7274-92b8-c1799f87ba8c
+- Added `current_account` helper method to ApplicationController (returns `current_user&.account`)
+- Added `require_active_subscription` before_action to ApplicationController
+- Redirects to billing page with message when subscription inactive
+- Redirects to billing page with message when no active agencies
+- Updated Admin::BaseController to include `require_active_subscription` filter
+- Updated Admin::BillingController to inherit from BaseController and skip the subscription check
+- Created 4 integration tests for subscription access control
+- Files changed:
+  - app/controllers/application_controller.rb (modified - added current_account, require_active_subscription)
+  - app/controllers/admin/base_controller.rb (modified - added require_active_subscription before_action)
+  - app/controllers/admin/billing_controller.rb (modified - inherit from BaseController, skip subscription check)
+  - test/controllers/application_controller_test.rb (new - 4 tests)
+- **Learnings for future iterations:**
+  - BillingController must skip subscription check so users can access billing to fix issues
+  - The billing page is the appropriate redirect target for both subscription and agency issues
+  - All CI checks pass: tests (186), rubocop, brakeman
+---
+
+## 2026-01-31 - US-009
+Thread: https://ampcode.com/threads/T-019c16b1-1909-760f-9b09-49db916f9190
+- Verified all acceptance criteria already met from US-003 and US-008:
+  - `current_account` helper in ApplicationController (inherited by BaseController)
+  - `current_agency` in BaseController returns `current_user.account.agencies.where(active: true).first`
+  - BillingController and RequestsController both inherit from BaseController
+- No code changes needed - implementation complete from prior stories
+- Files verified:
+  - app/controllers/application_controller.rb (current_account helper)
+  - app/controllers/admin/base_controller.rb (current_agency helper)
+  - app/controllers/admin/billing_controller.rb (inherits BaseController)
+  - app/controllers/admin/requests_controller.rb (uses current_agency)
+- **Learnings for future iterations:**
+  - Some stories may be satisfied by earlier work - verify before implementing
+  - All CI checks pass: tests (186), rubocop, brakeman
+---
