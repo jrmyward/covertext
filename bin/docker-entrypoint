@@ -8,7 +8,9 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  # Use db:migrate for production (idempotent, safe for existing data)
+  # For fresh database setup, manually run: kamal app exec -d production 'bin/rails db:schema:load db:seed'
+  ./bin/rails db:migrate
 fi
 
 exec "${@}"
