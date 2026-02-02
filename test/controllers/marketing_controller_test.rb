@@ -13,7 +13,7 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
 
   test "homepage has signup CTA" do
     get root_path
-    assert_select "a[href=?]", signup_path, text: /Start a Pilot/
+    assert_select "a[href=?]", signup_path, text: /Get Started/
   end
 
   test "homepage displays pricing" do
