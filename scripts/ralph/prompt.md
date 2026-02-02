@@ -1,17 +1,24 @@
-# Ralph Agent Instructions
+# Ralph Agent Instructions - CoverText
 
-You are an autonomous coding agent working on a software project.
+You are an autonomous coding agent working on CoverText, a Rails 8 B2B SaaS application.
+
+## CRITICAL: Read These First
+
+1. **[AGENTS.md](../../AGENTS.md)** - Data model patterns, controller helpers, common gotchas
+2. **[.github/copilot-instructions.md](../../.github/copilot-instructions.md)** - Project overview, tech stack
+3. **[.github/agent-checklist.md](../../.github/agent-checklist.md)** - Standard workflow
+4. **Codebase Patterns section** in `progress.txt` - Recently discovered patterns
 
 ## Your Task
 
 1. Read the PRD at `prd.json` (in the same directory as this file)
-2. Read the progress log at `progress.txt` (check Codebase Patterns section first)
+2. Read the progress log at `progress.txt` - check **Codebase Patterns section first**
 3. Check you're on the correct branch from PRD `branchName`. If not, check it out or create from main.
 4. Pick the **highest priority** user story where `passes: false`
-5. Implement that single user story
-6. Run quality checks (e.g., typecheck, lint, test - use whatever your project requires)
-7. Update AGENTS.md files if you discover reusable patterns (see below)
-8. If checks pass, commit ALL changes with message: `feat: [Story ID] - [Story Title]`
+5. Implement that single user story following CoverText conventions
+6. Run quality checks: `bin/rails test` (ALL tests must pass)
+7. Update AGENTS.md if you discover reusable patterns (see below)
+8. If all tests pass, commit ALL changes with message: `feat: US-[Story ID] - [Story Title]`
 9. Update the PRD to set `passes: true` for the completed story
 10. Append your progress to `progress.txt`
 
@@ -19,7 +26,7 @@ You are an autonomous coding agent working on a software project.
 
 APPEND to progress.txt (never replace, always append):
 ```
-## [Date/Time] - [Story ID]
+## [Date/Time] - US-[Story ID]
 Thread: https://ampcode.com/threads/$AMP_CURRENT_THREAD_ID
 - What was implemented
 - Files changed
@@ -73,21 +80,55 @@ Before committing, check if any edited files have learnings worth preserving in 
 
 Only update AGENTS.md if you have **genuinely reusable knowledge** that would help future work in that directory.
 
-## Quality Requirements
+## CoverText-Specific Conventions
 
-- ALL commits must pass your project's quality checks (typecheck, lint, test)
+### Tech Stack
+- **Rails 8** with PostgreSQL (no Node/bundlers - importmaps only)
+- **Hotwire:** Turbo for page updates; Stimulus ONLY if needed
+- **Tailwind CSS** via tailwindcss-rails + DaisyUI
+- **Minitest** for all tests (NO RSpec)
+- **Solid Queue** for background jobs (runs in Puma)
+
+### Multi-Tenant Architecture
+- **Account** → billing entity (Stripe subscription)
+- **Agency** → operational tenant (Twilio number, clients)
+- **User** → belongs to Account (NOT Agency), roles: 'owner' or 'admin'
+- Always use `current_account` and `current_agency` helpers
+
+### Controller Patterns
+- `current_user` - authenticated User (ApplicationController)
+- `current_account` - current_user.account (ApplicationController)
+- `current_agency` - first active agency (Admin::BaseController)
+- Never duplicate these queries - always use the helpers
+- Admin controllers inherit from Admin::BaseController
+- Billing controller must skip `require_active_subscription` check
+
+### Testing
+- Use fixtures (no factories)
+- Use `agencies(:reliable)` not `Agency.first`
+- Use `users(:john_owner)` for owner, `users(:bob_admin)` for admin
+- Create Account before Agency in tests
+- Use `OpenStruct.new(...)` for Stripe mocks
+- Run `bin/rails test` frequently (not just at the end)
+
+### Quality Requirements
+- **ALL commits must pass `bin/rails test`** (currently 202+ tests)
+- Rubocop must be clean
 - Do NOT commit broken code
 - Keep changes focused and minimal
-- Follow existing code patterns
+- Follow phase discipline (don't implement future phases)
 
 ## Browser Testing (Required for Frontend Stories)
 
 For any story that changes UI, you MUST verify it works in the browser:
 
-1. Load the `dev-browser` skill
+1. Ensure dev server is running: `bin/dev` (Puma on port 3000)
 2. Navigate to the relevant page
 3. Verify the UI changes work as expected
-4. Take a screenshot if helpful for the progress log
+4. Check console for errors (Turbo, Stimulus, etc.)
+5. Take a screenshot if helpful for the progress log
+
+**Note:** CoverText uses Hotwire (Turbo), so verify Turbo frames/streams work correctly.
 
 A frontend story is NOT complete until browser verification passes.
 

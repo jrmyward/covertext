@@ -183,12 +183,39 @@ bin/ci                      # Full CI suite (rubocop, brakeman, bundler-audit, i
 - Keep secrets out of git; use Rails credentials and .kamal/secrets
 - Docker images: `ghcr.io/workhorse-solutions/covertext` (lowercase required)
 
+## Ralph Autonomous Agent
+
+Ralph is an optional autonomous agent system for implementing multi-story features. It's configured specifically for CoverText conventions.
+
+### When to Use Ralph
+- Multi-story features with clear requirements
+- Repetitive implementation (migrations, CRUD, tests)
+- Features following established patterns
+- When you want to focus on planning, not typing
+
+### Ralph Workflow
+1. Create PRD in `docs/prd/` (manually or with Amp prd skill)
+2. Convert to `scripts/ralph/prd.json` (use Amp ralph skill)
+3. Run: `cd scripts/ralph && ./ralph.sh --tool amp 20`
+4. Ralph implements stories, updates progress.txt, commits
+5. Review commits, run `bin/ci`, merge
+
+### Ralph Configuration
+- **Prompt:** `scripts/ralph/prompt.md` (CoverText-customized)
+- **PRD Skill:** `scripts/ralph/skill_prd.md` (generates docs/prd/ files)
+- **Converter Skill:** `scripts/ralph/skill_ralph.md` (creates prd.json)
+- **Progress Log:** `scripts/ralph/progress.txt` (learning log)
+- **Documentation:** `scripts/ralph/README.md` (full workflow guide)
+
+Ralph reads AGENTS.md and copilot-instructions.md on every iteration, so updating those files improves Ralph's behavior.
+
 ## Common Gotchas
 - Always verify existing implementation before adding features (earlier stories may satisfy later ones)
 - BillingController must skip subscription check so users can fix billing issues
 - Helper methods exist for a reason - use them instead of duplicating query logic
 - When PRD specifies new data model, update test expectations to match
 - Check both seed test files when updating seed expectations
+- Ralph story sizing: one story = one iteration (too big = runs out of context)
 
 ---
 
@@ -199,8 +226,9 @@ bin/ci                      # Full CI suite (rubocop, brakeman, bundler-audit, i
 ### Before Starting Work:
 1. Read this file completely
 2. Read `.github/copilot-instructions.md` for project overview
-3. Read `.github/agent-checklist.md` for agent standard operating proceedures
-3. Check `tasks/progress.txt` for recent learnings
+3. Read `.github/agent-checklist.md` for agent standard operating procedures
+4. Check `scripts/ralph/progress.txt` for recent learnings (if using Ralph)
+5. Check `tasks/progress.txt` for recent learnings (if working manually)
 
 ### While Working:
 - When you discover a new pattern or solve a tricky issue, note it
@@ -209,10 +237,10 @@ bin/ci                      # Full CI suite (rubocop, brakeman, bundler-audit, i
 
 ### After Completing Work:
 1. Update relevant sections with new patterns discovered
-2. Add entry to `tasks/progress.txt` with:
-   - What was implemented
-   - Key learnings for future iterations
-   - Files changed
+2. Add entry to appropriate progress log:
+   - Ralph work: `scripts/ralph/progress.txt`
+   - Manual work: `tasks/progress.txt`
+   - Include: what was implemented, key learnings, files changed
 3. If you created new conventions (controller patterns, model methods, etc.), document them
 
 ### What to Document:

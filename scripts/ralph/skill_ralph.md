@@ -3,15 +3,13 @@ name: ralph
 description: "Convert PRDs to prd.json format for the Ralph autonomous agent system. Use when you have an existing PRD and need to convert it to Ralph's JSON format. Triggers on: convert this prd, turn this into ralph format, create prd.json from this, ralph json."
 ---
 
-# Ralph PRD Converter
+# Ralph PRD Converter - CoverText
 
-Converts existing PRDs to the prd.json format that Ralph uses for autonomous execution.
-
----
+Converts existing PRDs from `docs/prd/` to the prd.json format that Ralph uses for autonomous execution.
 
 ## The Job
 
-Take a PRD (markdown file or text) and convert it to `prd.json` in your ralph directory.
+Take a PRD (from docs/prd/ or text) and convert it to `scripts/ralph/prd.json`.
 
 ---
 
@@ -98,31 +96,31 @@ Each criterion must be something Ralph can CHECK, not something vague.
 
 ### Always include as final criterion:
 ```
-"Typecheck passes"
-```
-
-For stories with testable logic, also include:
-```
-"Tests pass"
+"All tests pass (bin/rails test)"
+"Rubocop clean"
 ```
 
 ### For stories that change UI, also include:
 ```
-"Verify in browser using dev-browser skill"
+"Verify in browser using dev server (bin/dev)"
 ```
 
-Frontend stories are NOT complete until visually verified. Ralph will use the dev-browser skill to navigate to the page, interact with the UI, and confirm changes work.
+Frontend stories are NOT complete until visually verified. Ralph will use the dev server (port 3000) to navigate to the page and confirm changes work.
 
 ---
 
 ## Conversion Rules
 
 1. **Each user story becomes one JSON entry**
-2. **IDs**: Sequential (US-001, US-002, etc.)
+2. **IDs**: Sequential numbers only ("1", "2", "3", etc.) - Ralph adds "US-" prefix in commits
+   - **IDs are feature-scoped, not globally unique**
+   - Same story ID can exist across different features (different branches)
+   - Meaningful identifier = branch name + story ID (e.g., `ralph/billing` US-3)
 3. **Priority**: Based on dependency order, then document order
 4. **All stories**: `passes: false` and empty `notes`
 5. **branchName**: Derive from feature name, kebab-case, prefixed with `ralph/`
-6. **Always add**: "Typecheck passes" to every story's acceptance criteria
+6. **Always add**: "All tests pass (bin/rails test)" and "Rubocop clean" to every story's acceptance criteria
+7. **Output location**: `scripts/ralph/prd.json` (NOT tasks/prd.json)
 
 ---
 
@@ -168,34 +166,36 @@ Add ability to mark tasks with different statuses.
   "description": "Task Status Feature - Track task progress with status indicators",
   "userStories": [
     {
-      "id": "US-001",
+      "id": "1",
       "title": "Add status field to tasks table",
       "description": "As a developer, I need to store task status in the database.",
       "acceptanceCriteria": [
         "Add status column: 'pending' | 'in_progress' | 'done' (default 'pending')",
         "Generate and run migration successfully",
-        "Typecheck passes"
+        "All tests pass (bin/rails test)",
+        "Rubocop clean"
       ],
       "priority": 1,
       "passes": false,
       "notes": ""
     },
     {
-      "id": "US-002",
+      "id": "2",
       "title": "Display status badge on task cards",
       "description": "As a user, I want to see task status at a glance.",
       "acceptanceCriteria": [
         "Each task card shows colored status badge",
         "Badge colors: gray=pending, blue=in_progress, green=done",
-        "Typecheck passes",
-        "Verify in browser using dev-browser skill"
+        "All tests pass (bin/rails test)",
+        "Rubocop clean",
+        "Verify in browser using dev server (bin/dev)"
       ],
       "priority": 2,
       "passes": false,
       "notes": ""
     },
     {
-      "id": "US-003",
+      "id": "3",
       "title": "Add status toggle to task list rows",
       "description": "As a user, I want to change task status directly from the list.",
       "acceptanceCriteria": [
@@ -210,7 +210,7 @@ Add ability to mark tasks with different statuses.
       "notes": ""
     },
     {
-      "id": "US-004",
+      "id": "4",
       "title": "Filter tasks by status",
       "description": "As a user, I want to filter the list to see only certain statuses.",
       "acceptanceCriteria": [
@@ -233,10 +233,10 @@ Add ability to mark tasks with different statuses.
 
 **Before writing a new prd.json, check if there is an existing one from a different feature:**
 
-1. Read the current `prd.json` if it exists
+1. Read the current `scripts/ralph/prd.json` if it exists
 2. Check if `branchName` differs from the new feature's branch name
-3. If different AND `progress.txt` has content beyond the header:
-   - Create archive folder: `archive/YYYY-MM-DD-feature-name/`
+3. If different AND `scripts/ralph/progress.txt` has content beyond the header:
+   - Create archive folder: `scripts/ralph/archive/YYYY-MM-DD-feature-name/`
    - Copy current `prd.json` and `progress.txt` to archive
    - Reset `progress.txt` with fresh header
 
@@ -246,12 +246,13 @@ Add ability to mark tasks with different statuses.
 
 ## Checklist Before Saving
 
-Before writing prd.json, verify:
+Before writing scripts/ralph/prd.json, verify:
 
 - [ ] **Previous run archived** (if prd.json exists with different branchName, archive it first)
 - [ ] Each story is completable in one iteration (small enough)
-- [ ] Stories are ordered by dependency (schema to backend to UI)
-- [ ] Every story has "Typecheck passes" as criterion
-- [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
+- [ ] Stories are ordered by dependency (schema → backend → UI)
+- [ ] Every story has "All tests pass (bin/rails test)" and "Rubocop clean" as criteria
+- [ ] UI stories have "Verify in browser using dev server (bin/dev)" as criterion
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story
+- [ ] Output file is `scripts/ralph/prd.json` (not tasks/)

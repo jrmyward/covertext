@@ -3,9 +3,11 @@ name: prd
 description: "Generate a Product Requirements Document (PRD) for a new feature. Use when planning a feature, starting a new project, or when asked to create a PRD. Triggers on: create a prd, write prd for, plan this feature, requirements for, spec out."
 ---
 
-# PRD Generator
+# PRD Generator - CoverText
 
-Create detailed Product Requirements Documents that are clear, actionable, and suitable for implementation.
+Create detailed Product Requirements Documents for CoverText features that are clear, actionable, and suitable for implementation.
+
+**Important:** This generates PRD markdown files only. Ralph execution uses the separate `ralph` skill to convert PRDs to prd.json format.
 
 ---
 
@@ -27,6 +29,7 @@ Ask only critical questions where the initial prompt is ambiguous. Focus on:
 - **Problem/Goal:** What problem does this solve?
 - **Core Functionality:** What are the key actions?
 - **Scope/Boundaries:** What should it NOT do?
+- **Phase:** Which phase does this belong to? (CoverText uses phase-based development)
 - **Success Criteria:** How do we know it's done?
 
 ### Format Questions Like This:
@@ -81,13 +84,15 @@ Each story should be small enough to implement in one focused session.
 **Acceptance Criteria:**
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
-- [ ] Typecheck/lint passes
-- [ ] **[UI stories only]** Verify in browser using dev-browser skill
+- [ ] All tests pass (bin/rails test)
+- [ ] Rubocop clean
+- [ ] **[UI stories only]** Verify in browser using dev server (bin/dev)
 ```
 
-**Important:** 
+**Important:**
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
-- **For any story with UI changes:** Always include "Verify in browser using dev-browser skill" as acceptance criteria. This ensures visual verification of frontend work.
+- **For any story with UI changes:** Always include "Verify in browser using dev server (bin/dev)" as acceptance criteria.
+- **For CoverText:** Always include "All tests pass (bin/rails test)" and "Rubocop clean" as final criteria.
 
 ### 4. Functional Requirements
 Numbered list of specific functionalities:
@@ -134,8 +139,9 @@ The PRD reader may be a junior developer or AI agent. Therefore:
 ## Output
 
 - **Format:** Markdown (`.md`)
-- **Location:** `docs/prd/`
+- **Location:** `docs/prd/` (active PRDs)
 - **Filename:** `prd-[feature-name].md` (kebab-case)
+- **After completion:** Move to `docs/prd/complete/` to keep workspace organized
 
 ---
 
@@ -163,7 +169,8 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 **Acceptance Criteria:**
 - [ ] Add priority column to tasks table: 'high' | 'medium' | 'low' (default 'medium')
 - [ ] Generate and run migration successfully
-- [ ] Typecheck passes
+- [ ] All tests pass (bin/rails test)
+- [ ] Rubocop clean
 
 ### US-002: Display priority indicator on task cards
 **Description:** As a user, I want to see task priority at a glance so I know what needs attention first.
@@ -171,8 +178,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 **Acceptance Criteria:**
 - [ ] Each task card shows colored priority badge (red=high, yellow=medium, gray=low)
 - [ ] Priority visible without hovering or clicking
-- [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] All tests pass (bin/rails test)
+- [ ] Rubocop clean
+- [ ] Verify in browser using dev server (bin/dev)
 
 ### US-003: Add priority selector to task edit
 **Description:** As a user, I want to change a task's priority when editing it.
@@ -181,8 +189,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Priority dropdown in task edit modal
 - [ ] Shows current priority as selected
 - [ ] Saves immediately on selection change
-- [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] All tests pass (bin/rails test)
+- [ ] Rubocop clean
+- [ ] Verify in browser using dev server (bin/dev)
 
 ### US-004: Filter tasks by priority
 **Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
@@ -191,8 +200,9 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Filter dropdown with options: All | High | Medium | Low
 - [ ] Filter persists in URL params
 - [ ] Empty state message when no tasks match filter
-- [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] All tests pass (bin/rails test)
+- [ ] Rubocop clean
+- [ ] Verify in browser using dev server (bin/dev)
 
 ## Functional Requirements
 
