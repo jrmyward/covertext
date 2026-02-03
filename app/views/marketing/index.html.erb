@@ -151,23 +151,25 @@
   <!-- Pricing -->
   <%= render UI::PricingSectionComponent.new(
     title: "Pricing Plans",
-    subtitle: "Choose the plan that fits your agency's needs"
+    subtitle: "Flexible pricing. No hidden fees. Scale with your needs."
   ) do %>
-    <div class="grid gap-6 md:grid-cols-3">
+    <div class="mt-8 grid gap-8 lg:grid-cols-3">
       <%= render UI::PricingCardComponent.new(
         tier: "Free",
         badge_text: "Get Started",
         badge_style: "badge-ghost",
         monthly_price: 0,
         yearly_price: 0,
+        description: "Experience essential features at no cost, setting the foundation for your business growth.",
         features: [
-          "Up to 50 texts/month",
-          "1 agency location",
-          "Basic support"
+          "For Personal Use",
+          "20 products",
+          "Limited Integrations"
         ],
-        cta_text: "Get Started",
+        cta_text: "Start for Free",
         cta_url: "#",
-        cta_primary: false
+        cta_primary: false,
+        header_bg: "bg-base-200"
       ) %>
 
       <%= render UI::PricingCardComponent.new(
@@ -175,17 +177,19 @@
         badge_text: "Most Popular",
         badge_style: "badge-primary",
         monthly_price: 99,
-        yearly_price: 950,
-        yearly_savings: "save $238",
+        yearly_price: 59,
+        description: "Unlock advanced features and elevate your SaaS experience with our premium plan.",
         features: [
-          "Unlimited texts",
-          "Up to 3 agency locations",
-          "Priority support",
-          "Custom branding"
+          "Up to 10 Team Members",
+          "Unlocked all Apps",
+          "Use all Integrations",
+          "99.9% Support Response Time"
         ],
-        cta_text: "Start Free Trial",
+        cta_text: "Upgrade to Premium",
         cta_url: "#",
-        cta_primary: true
+        cta_primary: true,
+        header_bg: "bg-primary/10",
+        header_color: "text-primary"
       ) %>
 
       <%= render UI::PricingCardComponent.new(
@@ -193,18 +197,20 @@
         badge_text: "Enterprise",
         badge_style: "badge-accent",
         monthly_price: 199,
-        yearly_price: 1910,
-        yearly_savings: "save $478",
+        yearly_price: 159,
+        description: "Unleash business potential with our ultimate plan. Maximize features, scalability, and success.",
         features: [
-          "Unlimited everything",
-          "Unlimited agency locations",
-          "Dedicated support",
-          "API access",
-          "White-label options"
+          "Unlimited Members",
+          "Unlocked all Apps",
+          "Use all Integrations",
+          "24*7 Quick Support",
+          "Marketing automations"
         ],
-        cta_text: "Contact Sales",
+        cta_text: "Get Ultimate Power",
         cta_url: "#",
-        cta_primary: true
+        cta_primary: true,
+        header_bg: "bg-secondary/10",
+        header_color: "text-secondary"
       ) %>
     </div>
   <% end %>

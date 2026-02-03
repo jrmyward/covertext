@@ -28,8 +28,8 @@ module UI
         subtitle: "Choose your plan"
       ))
 
-      assert_selector "input[type='radio'][name='billing-period'][aria-label='Monthly'][checked]"
-      assert_selector "input[type='radio'][name='billing-period'][aria-label='Yearly']"
+      assert_selector "input[type='radio'][name='pricing-tab'][value='monthly'][aria-label='Monthly']"
+      assert_selector "input[type='radio'][name='pricing-tab'][value='yearly'][aria-label='Yearly'][checked]"
     end
 
     test "renders block content" do
@@ -72,14 +72,14 @@ module UI
       assert_selector ".text-center p", text: "Choose your plan"
     end
 
-    test "renders toggle in centered join container" do
+    test "renders toggle in centered tabs container" do
       render_inline(PricingSectionComponent.new(
         title: "Pricing Plans",
         subtitle: "Choose your plan"
       ))
 
-      assert_selector ".flex.justify-center .join"
-      assert_selector ".join input.join-item.btn[type='radio']", count: 2
+      assert_selector ".flex.justify-center .tabs.tabs-box"
+      assert_selector ".tabs input.tab[type='radio']", count: 2
     end
   end
 end

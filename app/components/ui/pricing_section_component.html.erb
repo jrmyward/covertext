@@ -5,10 +5,24 @@
   </div>
 
   <!-- Monthly/Yearly Toggle -->
-  <div class="mb-8 flex justify-center">
-    <div class="join">
-      <input class="join-item btn" type="radio" name="billing-period" aria-label="Monthly" checked>
-      <input class="join-item btn" type="radio" name="billing-period" aria-label="Yearly">
+  <div class="mt-8 flex justify-center">
+    <div role="tablist" class="tabs tabs-box relative w-fit">
+      <input
+        type="radio"
+        name="pricing-tab"
+        role="tab"
+        value="monthly"
+        class="tab px-8"
+        aria-label="Monthly">
+      <input
+        type="radio"
+        name="pricing-tab"
+        role="tab"
+        class="tab px-8"
+        value="yearly"
+        aria-label="Yearly"
+        checked>
+      <span class="badge badge-neutral absolute -end-10 -top-2">-40%</span>
     </div>
   </div>
 

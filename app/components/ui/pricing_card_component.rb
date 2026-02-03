@@ -44,10 +44,14 @@ module UI
       monthly_price:,
       yearly_price:,
       yearly_savings: nil,
+      description: nil,
       features:,
       cta_text:,
       cta_url:,
-      cta_primary: false
+      cta_primary: false,
+      header_bg: "bg-base-200",
+      header_color: nil,
+      price_size: "text-5xl"
     )
       @tier = tier
       @badge_text = badge_text
@@ -55,10 +59,14 @@ module UI
       @monthly_price = monthly_price
       @yearly_price = yearly_price
       @yearly_savings = yearly_savings
+      @description = description
       @features = features
       @cta_text = cta_text
       @cta_url = cta_url
       @cta_primary = cta_primary
+      @header_bg = header_bg
+      @header_color = header_color
+      @price_size = price_size
     end
 
     def monthly_price_display
@@ -70,8 +78,28 @@ module UI
     end
 
     def cta_classes
-      base = "btn w-full"
-      @cta_primary ? "#{base} btn-primary" : "#{base} btn-outline"
+      base = "btn btn-block mt-auto"
+      if @cta_primary
+        tier_color = @header_color&.sub("text-", "btn-") || "btn-primary"
+        "#{base} #{tier_color}"
+      else
+        "#{base} btn-outline border-base-300"
+      end
+    end
+
+    def header_classes
+      classes = [ @header_bg, "rounded-box p-6" ]
+      classes.compact.join(" ")
+    end
+
+    def tier_classes
+      classes = [ @header_color, "text-xl font-semibold" ]
+      classes.compact.join(" ")
+    end
+
+    def price_classes
+      classes = [ @header_color, @price_size, "font-semibold tracking-tight" ]
+      classes.compact.join(" ")
     end
   end
 end

@@ -45,7 +45,7 @@ module UI
       ))
 
       assert_selector "data[value='99']", text: "$99"
-      assert_text "per month"
+      assert_text "/month"
     end
 
     test "renders yearly price with data value" do
@@ -60,25 +60,25 @@ module UI
       ))
 
       assert_selector "data[value='950']", text: "$950"
-      assert_text "per year"
+      assert_text "/month"  # Both prices show /month
     end
 
-    test "renders yearly savings when provided" do
+    test "renders description when provided" do
       render_inline(PricingCardComponent.new(
         tier: "Premium",
         badge_text: "Most Popular",
         monthly_price: 99,
         yearly_price: 950,
-        yearly_savings: "save $238",
+        description: "Unlock advanced features and elevate your experience.",
         features: [ "Feature 1" ],
         cta_text: "Sign Up",
         cta_url: "#"
       ))
 
-      assert_selector ".text-success", text: "(save $238)"
+      assert_text "Unlock advanced features and elevate your experience."
     end
 
-    test "does not render savings when not provided" do
+    test "does not render description when not provided" do
       render_inline(PricingCardComponent.new(
         tier: "Free",
         badge_text: "Get Started",
@@ -89,10 +89,11 @@ module UI
         cta_url: "#"
       ))
 
-      refute_text "save"
+      # Should not have a description paragraph in header
+      assert_selector ".rounded-box p", count: 1  # Only the price paragraph
     end
 
-    test "renders all features with checkmarks" do
+    test "renders all features with bullet points" do
       render_inline(PricingCardComponent.new(
         tier: "Premium",
         badge_text: "Most Popular",
@@ -107,7 +108,6 @@ module UI
       assert_text "Unlimited texts"
       assert_text "Priority support"
       assert_text "Custom branding"
-      assert_selector "svg", count: 3  # heroicons
     end
 
     test "renders CTA as primary button when cta_primary is true" do
@@ -140,7 +140,7 @@ module UI
       assert_selector "a.btn.btn-outline[href='/signup']", text: "Get Started"
     end
 
-    test "defaults badge_style to badge-ghost" do
+    test "renders tier name without inline badge when badge_style is badge-ghost" do
       render_inline(PricingCardComponent.new(
         tier: "Free",
         badge_text: "Get Started",
@@ -151,7 +151,9 @@ module UI
         cta_url: "#"
       ))
 
-      assert_selector ".badge.badge-ghost", text: "Get Started"
+      assert_selector "h3", text: "Free"
+      # Badge-ghost style means no inline badge in header
+      refute_selector ".rounded-box .badge"
     end
 
     test "defaults cta_primary to false (outline button)" do
