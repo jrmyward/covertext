@@ -1,0 +1,9 @@
+<div class="<%= outer_classes %>"<% if kwargs[:id] %> id="<%= kwargs[:id] %>"<% end %><% if kwargs[:data] %><% kwargs[:data].each do |key, value| %> data-<%= key.to_s.dasherize %>="<%= value %>"<% end %><% end %>>
+  <div class="<%= badge_classes %>"><%= number %></div>
+  <h4 class="<%= title_classes %>"><%= title %></h4>
+  <% if description.present? %>
+    <p class="<%= description_classes %>"><%= description %></p>
+  <% elsif content? %>
+    <%= content %>
+  <% end %>
+</div>

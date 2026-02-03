@@ -98,26 +98,26 @@
   <%= render UI::SectionComponent.new do %>
     <h3 class="text-3xl font-bold text-center mb-12">How It Works</h3>
     <div class="grid md:grid-cols-4 gap-8">
-      <div class="text-center">
-        <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
-        <h4 class="font-bold mb-2">Client Texts</h4>
-        <p class="text-sm text-base-content/70">They send a message to your agency number</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
-        <h4 class="font-bold mb-2">CoverText Identifies</h4>
-        <p class="text-sm text-base-content/70">Intent is detected and the client is matched</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
-        <h4 class="font-bold mb-2">Instant Delivery</h4>
-        <p class="text-sm text-base-content/70">Document or answer is sent automatically</p>
-      </div>
-      <div class="text-center">
-        <div class="w-16 h-16 rounded-full bg-primary text-primary-content flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
-        <h4 class="font-bold mb-2">Staff Stays Focused</h4>
-        <p class="text-sm text-base-content/70">Your team works on high-value tasks instead</p>
-      </div>
+      <%= render UI::StepComponent.new(
+        number: 1,
+        title: "Client Texts",
+        description: "They send a message to your agency number"
+      ) %>
+      <%= render UI::StepComponent.new(
+        number: 2,
+        title: "CoverText Identifies",
+        description: "Intent is detected and the client is matched"
+      ) %>
+      <%= render UI::StepComponent.new(
+        number: 3,
+        title: "Instant Delivery",
+        description: "Document or answer is sent automatically"
+      ) %>
+      <%= render UI::StepComponent.new(
+        number: 4,
+        title: "Staff Stays Focused",
+        description: "Your team works on high-value tasks instead"
+      ) %>
     </div>
   <% end %>
 
