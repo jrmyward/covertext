@@ -53,27 +53,21 @@
   <%= render UI::SectionComponent.new do %>
     <h3 class="text-3xl font-bold text-center mb-12">What It Handles</h3>
     <div class="space-y-4">
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">✅</div>
-        <div>
-          <h4 class="font-bold text-lg">Insurance ID Cards</h4>
-          <p class="text-base-content/70">Clients receive their policy documents via MMS instantly</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">✅</div>
-        <div>
-          <h4 class="font-bold text-lg">Policy Expiration Lookups</h4>
-          <p class="text-base-content/70">Quick answers about when policies expire</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">✅</div>
-        <div>
-          <h4 class="font-bold text-lg">Graceful Fallback</h4>
-          <p class="text-base-content/70">Unsupported requests get a helpful "we'll call you" response</p>
-        </div>
-      </div>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "✅",
+        title: "Insurance ID Cards",
+        description: "Clients receive their policy documents via MMS instantly"
+      ) %>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "✅",
+        title: "Policy Expiration Lookups",
+        description: "Quick answers about when policies expire"
+      ) %>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "✅",
+        title: "Graceful Fallback",
+        description: "Unsupported requests get a helpful \"we'll call you\" response"
+      ) %>
     </div>
   <% end %>
 
@@ -82,26 +76,21 @@
     <h3 class="text-3xl font-bold text-center mb-4">What CoverText Does NOT Do</h3>
     <p class="text-center text-base-content/70 mb-12">We're intentionally narrow to stay simple and compliant</p>
     <div class="grid md:grid-cols-2 gap-6">
-      <div class="flex items-start gap-3">
-        <div class="text-xl">❌</div>
-        <div><strong>No policy changes</strong> — those require agent approval</div>
-      </div>
-      <div class="flex items-start gap-3">
-        <div class="text-xl">❌</div>
-        <div><strong>No billing</strong> — payment processing stays with you</div>
-      </div>
-      <div class="flex items-start gap-3">
-        <div class="text-xl">❌</div>
-        <div><strong>No underwriting</strong> — quotes and risk assessment aren't automated</div>
-      </div>
-      <div class="flex items-start gap-3">
-        <div class="text-xl">❌</div>
-        <div><strong>No carrier integrations</strong> — we work with your existing data</div>
-      </div>
-      <div class="flex items-start gap-3">
-        <div class="text-xl">❌</div>
-        <div><strong>No client portal</strong> — SMS is the interface, period</div>
-      </div>
+      <%= render UI::FeatureItemComponent.new(icon: "❌", icon_size: "text-xl", gap: "gap-3") do %>
+        <strong>No policy changes</strong> — those require agent approval
+      <% end %>
+      <%= render UI::FeatureItemComponent.new(icon: "❌", icon_size: "text-xl", gap: "gap-3") do %>
+        <strong>No billing</strong> — payment processing stays with you
+      <% end %>
+      <%= render UI::FeatureItemComponent.new(icon: "❌", icon_size: "text-xl", gap: "gap-3") do %>
+        <strong>No underwriting</strong> — quotes and risk assessment aren't automated
+      <% end %>
+      <%= render UI::FeatureItemComponent.new(icon: "❌", icon_size: "text-xl", gap: "gap-3") do %>
+        <strong>No carrier integrations</strong> — we work with your existing data
+      <% end %>
+      <%= render UI::FeatureItemComponent.new(icon: "❌", icon_size: "text-xl", gap: "gap-3") do %>
+        <strong>No client portal</strong> — SMS is the interface, period
+      <% end %>
     </div>
   <% end %>
 
@@ -136,34 +125,26 @@
   <%= render UI::SectionComponent.new(bg: :light) do %>
     <h3 class="text-3xl font-bold text-center mb-12">Compliance & Trust</h3>
     <div class="grid md:grid-cols-2 gap-8">
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">🔒</div>
-        <div>
-          <h4 class="font-bold text-lg">STOP / START / HELP Supported</h4>
-          <p class="text-base-content/70">Full compliance with SMS regulations</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">🚫</div>
-        <div>
-          <h4 class="font-bold text-lg">Opt-Out Enforcement</h4>
-          <p class="text-base-content/70">Clients can opt out anytime, automatically honored</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">📊</div>
-        <div>
-          <h4 class="font-bold text-lg">Full Audit Trail</h4>
-          <p class="text-base-content/70">Every message and action is logged</p>
-        </div>
-      </div>
-      <div class="flex items-start gap-4">
-        <div class="text-2xl">🏢</div>
-        <div>
-          <h4 class="font-bold text-lg">You Own Your Data</h4>
-          <p class="text-base-content/70">Your agency data stays yours, always</p>
-        </div>
-      </div>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "🔒",
+        title: "STOP / START / HELP Supported",
+        description: "Full compliance with SMS regulations"
+      ) %>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "🚫",
+        title: "Opt-Out Enforcement",
+        description: "Clients can opt out anytime, automatically honored"
+      ) %>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "📊",
+        title: "Full Audit Trail",
+        description: "Every message and action is logged"
+      ) %>
+      <%= render UI::FeatureItemComponent.new(
+        icon: "🏢",
+        title: "You Own Your Data",
+        description: "Your agency data stays yours, always"
+      ) %>
     </div>
   <% end %>
 
