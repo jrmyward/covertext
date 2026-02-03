@@ -149,148 +149,63 @@
   <% end %>
 
   <!-- Pricing -->
-  <%= render UI::SectionComponent.new(py: "py-8 lg:py-20", tag: :section, id: "pricing", inner_class: "group") do %>
-    <div class="text-center">
-      <h2 class="text-3xl font-semibold sm:text-4xl">Pricing Plans</h2>
-      <p class="text-base-content/80 mt-2 sm:text-lg">
-        Flexible pricing. No hidden fees. Scale with your needs.
-      </p>
-    </div>
+  <%= render UI::PricingSectionComponent.new(
+    title: "Pricing Plans",
+    subtitle: "Choose the plan that fits your agency's needs"
+  ) do %>
+    <div class="grid gap-6 md:grid-cols-3">
+      <%= render UI::PricingCardComponent.new(
+        tier: "Free",
+        badge_text: "Get Started",
+        badge_style: "badge-ghost",
+        monthly_price: 0,
+        yearly_price: 0,
+        features: [
+          "Up to 50 texts/month",
+          "1 agency location",
+          "Basic support"
+        ],
+        cta_text: "Get Started",
+        cta_url: "#",
+        cta_primary: false
+      ) %>
 
-    <div class="mt-8 flex justify-center">
-      <div role="tablist" class="tabs tabs-box relative w-fit">
-        <input
-          type="radio"
-          name="pricing-tab"
-          role="tab"
-          value="monthly"
-          class="tab px-8"
-          aria-label="Monthly">
-        <input
-          type="radio"
-          name="pricing-tab"
-          role="tab"
-          class="tab px-8"
-          value="yearly"
-          aria-label="Yearly"
-          checked>
-        <span class="badge badge-neutral absolute -end-10 -top-2">-40%</span>
-      </div>
-    </div>
+      <%= render UI::PricingCardComponent.new(
+        tier: "Premium",
+        badge_text: "Most Popular",
+        badge_style: "badge-primary",
+        monthly_price: 99,
+        yearly_price: 950,
+        yearly_savings: "save $238",
+        features: [
+          "Unlimited texts",
+          "Up to 3 agency locations",
+          "Priority support",
+          "Custom branding"
+        ],
+        cta_text: "Start Free Trial",
+        cta_url: "#",
+        cta_primary: true
+      ) %>
 
-    <div class="mt-8 grid gap-8 lg:grid-cols-3">
-      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
-        <div class="bg-base-200 p-6">
-          <h3 class="text-xl font-semibold">Free</h3>
-          <p class="mt-2 flex items-baseline">
-            <span class="text-5xl font-semibold tracking-tight">$0</span>
-            <span class="ml-1 text-xl font-medium">/month</span>
-          </p>
-          <p class="mt-4">
-            Experience essential features at no cost, setting the foundation for
-            your business growth.
-          </p>
-        </div>
-        <div class="p-6">
-          <ul class="list-inside list-disc space-y-3" role="list">
-            <li>
-              <span class="ms-3">For Personal Use</span>
-            </li>
-            <li>
-              <span class="ms-3">20 products</span>
-            </li>
-            <li>
-              <span class="ms-3">Limited Integrations</span>
-            </li>
-          </ul>
-        </div>
-        <button class="btn btn-outline border-base-300 btn-block mt-auto">
-          Start for Free
-        </button>
-      <% end %>
-
-      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
-        <div class="bg-primary/10 rounded-box p-6">
-          <div class="flex justify-between">
-            <h3 class="text-primary text-xl font-semibold">Premium</h3>
-            <div class="badge badge-primary badge-sm">Most Popular</div>
-          </div>
-
-          <p class="mt-4 flex items-baseline">
-            <span class="text-primary text-5xl font-semibold tracking-tight group-has-[[value=yearly]:checked]:hidden">
-              $99
-            </span>
-            <span class="text-primary text-5xl font-semibold tracking-tight group-has-[[value=monthly]:checked]:hidden">
-              $59
-            </span>
-            <span class="ml-1 text-xl font-medium">/month</span>
-          </p>
-          <p class="mt-6">
-            Unlock advanced features and elevate your SaaS experience with our
-            premium plan.
-          </p>
-        </div>
-        <div class="p-6">
-          <ul class="list-inside list-disc space-y-3" role="list">
-            <li>
-              <span class="ms-3">Up to 10 Team Members</span>
-            </li>
-            <li>
-              <span class="ms-3">Unlocked all Apps</span>
-            </li>
-            <li>
-              <span class="ms-3">Use all Integrations</span>
-            </li>
-            <li>
-              <span class="ms-3">99.9% Support Response Time</span>
-            </li>
-          </ul>
-        </div>
-        <button class="btn btn-primary btn-block mt-auto">
-          Upgrade to Premium
-        </button>
-      <% end %>
-
-      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
-        <div class="bg-secondary/10 rounded-box p-6">
-          <h3 class="text-secondary text-xl font-medium">Ultimate</h3>
-          <p class="mt-4 flex items-baseline">
-            <span class="text-secondary text-5xl font-semibold tracking-tight group-has-[[value=yearly]:checked]:hidden">
-              $199
-            </span>
-            <span class="text-secondary text-5xl font-semibold tracking-tight group-has-[[value=monthly]:checked]:hidden">
-              $159
-            </span>
-            <span class="ml-1 text-xl font-semibold">/month</span>
-          </p>
-          <p class="mt-6 line-clamp-2 overflow-ellipsis">
-            Unleash business potential with our ultimate plan. Maximize
-            features, scalability, and success.
-          </p>
-        </div>
-        <div class="p-6">
-          <ul class="list-inside list-disc space-y-3" role="list">
-            <li>
-              <span class="ms-3">Unlimited Members</span>
-            </li>
-            <li>
-              <span class="ms-3">Unlocked all Apps</span>
-            </li>
-            <li>
-              <span class="ms-3">Use all Integrations</span>
-            </li>
-            <li>
-              <span class="ms-3">24*7 Quick Support</span>
-            </li>
-            <li>
-              <span class="ms-3">Marketing automations</span>
-            </li>
-          </ul>
-        </div>
-        <button class="btn btn-secondary btn-block mt-auto">
-          Get Ultimate Power
-        </button>
-      <% end %>
+      <%= render UI::PricingCardComponent.new(
+        tier: "Ultimate",
+        badge_text: "Enterprise",
+        badge_style: "badge-accent",
+        monthly_price: 199,
+        yearly_price: 1910,
+        yearly_savings: "save $478",
+        features: [
+          "Unlimited everything",
+          "Unlimited agency locations",
+          "Dedicated support",
+          "API access",
+          "White-label options"
+        ],
+        cta_text: "Contact Sales",
+        cta_url: "#",
+        cta_primary: true
+      ) %>
     </div>
   <% end %>
 

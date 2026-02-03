@@ -1,0 +1,38 @@
+<%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
+  <div class="card-body">
+    <div class="mb-4">
+      <h3 class="text-xl font-bold"><%= @tier %></h3>
+      <div class="badge <%= @badge_style %> mt-2"><%= @badge_text %></div>
+    </div>
+    <div class="mb-6">
+      <!-- Monthly pricing (shown by default) -->
+      <div class="group-has-[:checked]:hidden">
+        <div class="text-4xl font-bold">
+          <data value="<%= @monthly_price %>"><%= monthly_price_display %></data>
+        </div>
+        <div class="text-base-content/70 text-sm">per month</div>
+      </div>
+      <!-- Yearly pricing (shown when second radio checked) -->
+      <div class="hidden group-has-[:checked]:block">
+        <div class="text-4xl font-bold">
+          <data value="<%= @yearly_price %>"><%= yearly_price_display %></data>
+        </div>
+        <div class="text-base-content/70 text-sm">
+          per year
+          <% if @yearly_savings.present? %>
+            <span class="text-success">(<%= @yearly_savings %>)</span>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <ul class="mb-6 space-y-3">
+      <% @features.each do |feature| %>
+        <li class="flex items-center gap-2">
+          <%= helpers.heroicon "check", variant: :mini, options: { class: "text-success size-5" } %>
+          <span><%= feature %></span>
+        </li>
+      <% end %>
+    </ul>
+    <%= link_to @cta_text, @cta_url, class: cta_classes %>
+  </div>
+<% end %>

@@ -1,0 +1,16 @@
+<%= render UI::SectionComponent.new(py: "py-8 lg:py-20", tag: :section, id: "pricing", inner_class: "group") do %>
+  <div class="text-center">
+    <h2 class="mb-4 text-3xl font-bold"><%= @title %></h2>
+    <p class="text-base-content/70 mb-8"><%= @subtitle %></p>
+  </div>
+
+  <!-- Monthly/Yearly Toggle -->
+  <div class="mb-8 flex justify-center">
+    <div class="join">
+      <input class="join-item btn" type="radio" name="billing-period" aria-label="Monthly" checked>
+      <input class="join-item btn" type="radio" name="billing-period" aria-label="Yearly">
+    </div>
+  </div>
+
+  <%= content %>
+<% end %>
