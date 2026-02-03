@@ -18,6 +18,8 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
 
   test "homepage displays pricing" do
     get root_path
-    assert_match /\$49/, response.body
+    assert_match /Pricing Plans/, response.body
+    assert_match /\$0/, response.body # Free tier
+    assert_match /\$99/, response.body # Premium tier
   end
 end

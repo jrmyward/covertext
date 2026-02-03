@@ -149,16 +149,149 @@
   <% end %>
 
   <!-- Pricing -->
+  <%= render UI::SectionComponent.new(py: "py-8 lg:py-20", tag: :section, id: "pricing", inner_class: "group") do %>
+    <div class="text-center">
+      <h2 class="text-3xl font-semibold sm:text-4xl">Pricing Plans</h2>
+      <p class="text-base-content/80 mt-2 sm:text-lg">
+        Flexible pricing. No hidden fees. Scale with your needs.
+      </p>
+    </div>
 
-  <%= render UI::SectionComponent.new do %>
-    <h3 class="text-3xl font-bold mb-8">Simple, Transparent Pricing</h3>
-    <%= render UI::CardComponent.new(outer_class: "card bg-base-200 shadow-xl max-w-md mx-auto") do %>
-      <div class="text-5xl font-bold text-primary mb-2">$49<span class="text-2xl text-base-content/60">/month</span></div>
-      <p class="text-xl mb-4">Per Agency</p>
-      <p class="text-base-content/70 mb-6">Get started with automated client service. Cancel anytime.</p>
-      <%= link_to "Get Started", signup_path, class: "btn btn-primary btn-lg" %>
-    <% end %>
-    <p class="text-sm text-base-content/60 mt-8">Need higher volume? Contact us for Growth pricing ($99/month)</p>
+    <div class="mt-8 flex justify-center">
+      <div role="tablist" class="tabs tabs-box relative w-fit">
+        <input
+          type="radio"
+          name="pricing-tab"
+          role="tab"
+          value="monthly"
+          class="tab px-8"
+          aria-label="Monthly">
+        <input
+          type="radio"
+          name="pricing-tab"
+          role="tab"
+          class="tab px-8"
+          value="yearly"
+          aria-label="Yearly"
+          checked>
+        <span class="badge badge-neutral absolute -end-10 -top-2">-40%</span>
+      </div>
+    </div>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-3">
+      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
+        <div class="bg-base-200 p-6">
+          <h3 class="text-xl font-semibold">Free</h3>
+          <p class="mt-2 flex items-baseline">
+            <span class="text-5xl font-semibold tracking-tight">$0</span>
+            <span class="ml-1 text-xl font-medium">/month</span>
+          </p>
+          <p class="mt-4">
+            Experience essential features at no cost, setting the foundation for
+            your business growth.
+          </p>
+        </div>
+        <div class="p-6">
+          <ul class="list-inside list-disc space-y-3" role="list">
+            <li>
+              <span class="ms-3">For Personal Use</span>
+            </li>
+            <li>
+              <span class="ms-3">20 products</span>
+            </li>
+            <li>
+              <span class="ms-3">Limited Integrations</span>
+            </li>
+          </ul>
+        </div>
+        <button class="btn btn-outline border-base-300 btn-block mt-auto">
+          Start for Free
+        </button>
+      <% end %>
+
+      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
+        <div class="bg-primary/10 rounded-box p-6">
+          <div class="flex justify-between">
+            <h3 class="text-primary text-xl font-semibold">Premium</h3>
+            <div class="badge badge-primary badge-sm">Most Popular</div>
+          </div>
+
+          <p class="mt-4 flex items-baseline">
+            <span class="text-primary text-5xl font-semibold tracking-tight group-has-[[value=yearly]:checked]:hidden">
+              $99
+            </span>
+            <span class="text-primary text-5xl font-semibold tracking-tight group-has-[[value=monthly]:checked]:hidden">
+              $59
+            </span>
+            <span class="ml-1 text-xl font-medium">/month</span>
+          </p>
+          <p class="mt-6">
+            Unlock advanced features and elevate your SaaS experience with our
+            premium plan.
+          </p>
+        </div>
+        <div class="p-6">
+          <ul class="list-inside list-disc space-y-3" role="list">
+            <li>
+              <span class="ms-3">Up to 10 Team Members</span>
+            </li>
+            <li>
+              <span class="ms-3">Unlocked all Apps</span>
+            </li>
+            <li>
+              <span class="ms-3">Use all Integrations</span>
+            </li>
+            <li>
+              <span class="ms-3">99.9% Support Response Time</span>
+            </li>
+          </ul>
+        </div>
+        <button class="btn btn-primary btn-block mt-auto">
+          Upgrade to Premium
+        </button>
+      <% end %>
+
+      <%= render UI::CardComponent.new(outer_class: "card border-base-300 border p-3") do %>
+        <div class="bg-secondary/10 rounded-box p-6">
+          <h3 class="text-secondary text-xl font-medium">Ultimate</h3>
+          <p class="mt-4 flex items-baseline">
+            <span class="text-secondary text-5xl font-semibold tracking-tight group-has-[[value=yearly]:checked]:hidden">
+              $199
+            </span>
+            <span class="text-secondary text-5xl font-semibold tracking-tight group-has-[[value=monthly]:checked]:hidden">
+              $159
+            </span>
+            <span class="ml-1 text-xl font-semibold">/month</span>
+          </p>
+          <p class="mt-6 line-clamp-2 overflow-ellipsis">
+            Unleash business potential with our ultimate plan. Maximize
+            features, scalability, and success.
+          </p>
+        </div>
+        <div class="p-6">
+          <ul class="list-inside list-disc space-y-3" role="list">
+            <li>
+              <span class="ms-3">Unlimited Members</span>
+            </li>
+            <li>
+              <span class="ms-3">Unlocked all Apps</span>
+            </li>
+            <li>
+              <span class="ms-3">Use all Integrations</span>
+            </li>
+            <li>
+              <span class="ms-3">24*7 Quick Support</span>
+            </li>
+            <li>
+              <span class="ms-3">Marketing automations</span>
+            </li>
+          </ul>
+        </div>
+        <button class="btn btn-secondary btn-block mt-auto">
+          Get Ultimate Power
+        </button>
+      <% end %>
+    </div>
   <% end %>
 
   <!-- Footer -->
