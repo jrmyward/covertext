@@ -150,63 +150,66 @@
 
   <!-- Pricing -->
   <%= render UI::PricingSectionComponent.new(
-    title: "Pricing Plans",
-    subtitle: "Flexible pricing. No hidden fees. Scale with your needs."
+    title: "Simple, Transparent Pricing",
+    subtitle: "Choose the plan that fits your agency. All plans include unlimited texts and 14-day free trial."
   ) do %>
     <div class="mt-8 grid gap-8 lg:grid-cols-3">
       <%= render UI::PricingCardComponent.new(
-        tier: "Free",
-        badge_text: "Get Started",
+        tier: "Starter",
+        badge_text: "Perfect for small agencies",
         badge_style: "badge-ghost",
-        monthly_price: 0,
-        yearly_price: 0,
-        description: "Experience essential features at no cost, setting the foundation for your business growth.",
+        monthly_price: 49,
+        yearly_price: 490,
+        description: "Everything you need to automate client service for a single agency location.",
         features: [
-          "For Personal Use",
-          "20 products",
-          "Limited Integrations"
+          "1 agency location",
+          "Unlimited text messages",
+          "Insurance card delivery",
+          "Policy lookup automation",
+          "Email support"
         ],
-        cta_text: "Start for Free",
-        cta_url: "#",
+        cta_text: "Get Started",
+        cta_url: signup_path,
         cta_primary: false,
         header_bg: "bg-base-200"
       ) %>
 
       <%= render UI::PricingCardComponent.new(
-        tier: "Premium",
+        tier: "Professional",
         badge_text: "Most Popular",
         badge_style: "badge-primary",
         monthly_price: 99,
-        yearly_price: 59,
-        description: "Unlock advanced features and elevate your SaaS experience with our premium plan.",
+        yearly_price: 950,
+        description: "Scale across multiple locations with priority support and advanced features.",
         features: [
-          "Up to 10 Team Members",
-          "Unlocked all Apps",
-          "Use all Integrations",
-          "99.9% Support Response Time"
+          "Up to 3 agency locations",
+          "Unlimited text messages",
+          "All Starter features",
+          "Custom branding & messaging",
+          "Priority support"
         ],
-        cta_text: "Upgrade to Premium",
-        cta_url: "#",
+        cta_text: "Get Started",
+        cta_url: signup_path,
         cta_primary: true,
         header_bg: "bg-primary/10",
         header_color: "text-primary"
       ) %>
 
       <%= render UI::PricingCardComponent.new(
-        tier: "Ultimate",
-        badge_text: "Enterprise",
-        badge_style: "badge-accent",
+        tier: "Enterprise",
+        badge_text: "For large agencies",
+        badge_style: "badge-secondary",
         monthly_price: 199,
-        yearly_price: 159,
-        description: "Unleash business potential with our ultimate plan. Maximize features, scalability, and success.",
+        yearly_price: 1990,
+        description: "For agency groups with unlimited locations and dedicated support.",
         features: [
-          "Unlimited Members",
-          "Unlocked all Apps",
-          "Use all Integrations",
-          "24*7 Quick Support",
-          "Marketing automations"
+          "Unlimited agency locations",
+          "Unlimited text messages",
+          "All Professional features",
+          "API access & integrations",
+          "Dedicated account manager"
         ],
-        cta_text: "Get Ultimate Power",
+        cta_text: "Contact Sales",
         cta_url: "#",
         cta_primary: true,
         header_bg: "bg-secondary/10",

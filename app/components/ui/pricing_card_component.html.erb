@@ -18,7 +18,10 @@
       <span class="<%= price_classes %> group-has-[[value=monthly]:checked]:hidden">
         <data value="<%= @yearly_price %>"><%= yearly_price_display %></data>
       </span>
-      <span class="ml-1 text-xl font-medium">/month</span>
+      <span class="ml-1 text-xl font-medium">
+        <span class="group-has-[[value=yearly]:checked]:hidden">/month</span>
+        <span class="group-has-[[value=monthly]:checked]:hidden">/year</span>
+      </span>
     </p>
 
     <% if @description.present? %>
