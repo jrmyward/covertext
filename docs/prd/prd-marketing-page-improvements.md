@@ -38,14 +38,58 @@ The goal is to ensure first-time visitors (independent insurance agency owners) 
 **Acceptance Criteria:**
 - [x] Marketing page CTAs use "Start Free Trial" or "Get Started"
 - [ ] Signup page title changed from "Start Your Pilot" to "Start Your Free Trial"
-- [ ] Plan selection changed from "Pilot - $49/month" to match marketing tier names
+- [ ] Plan selection removed (tier determined by which CTA was clicked)
 - [ ] No public or signup pages contain the word "Pilot"
 - [ ] Typecheck/lint passes
 - [ ] Verify in browser using dev-browser skill
 
 **Files to update:**
-- `app/views/registrations/new.html.erb` - Change heading and plan naming
-- `app/controllers/registrations_controller.rb` - Update plan_name logic if needed
+- `app/views/registrations/new.html.erb` - Change heading, remove plan radio buttons
+- `app/controllers/registrations_controller.rb` - Accept plan parameter from URL
+
+---
+
+### US-007: Pass Selected Tier from Marketing to Signup
+**Description:** As a visitor, when I click "Get Started" on a specific pricing tier, I want to sign up for that tier without having to select it again.
+
+**Status:** ❌ Not Started
+
+**Acceptance Criteria:**
+- [ ] Each pricing tier's CTA passes plan identifier (e.g., `?plan=starter`, `?plan=professional`, `?plan=enterprise`) to signup URL
+- [ ] Signup page accepts and validates plan parameter
+- [ ] Signup page displays selected tier name prominently (e.g., "Start Your Free Trial - Professional Plan")
+- [ ] Registration controller uses plan parameter to determine correct Stripe price ID
+- [ ] Default to "starter" if no plan parameter provided
+- [ ] Typecheck/lint passes
+- [ ] Verify in browser using dev-browser skill
+
+**Files to update:**
+- `app/views/marketing/index.html.erb` - Add `?plan=X` to pricing CTA URLs
+- `app/views/registrations/new.html.erb` - Display selected plan, remove radio buttons
+- `app/controllers/registrations_controller.rb` - Read plan param, map to Stripe price ID
+
+---
+
+### US-008: Configure Stripe for 3-Tier Pricing
+**Description:** As a system administrator, I want Stripe configured with all 3 pricing tiers so subscriptions can be created for Starter, Professional, and Enterprise plans.
+
+**Status:** ❌ Not Started
+
+**Acceptance Criteria:**
+- [ ] Create Stripe Price IDs for:
+  - Starter: $49/month ($490/year)
+  - Professional: $99/month ($950/year)
+  - Enterprise: $199/month ($1990/year)
+- [ ] Update `CREDENTIALS_SETUP.md` with new price IDs
+- [ ] Update `registrations_controller.rb` to map plan names to correct price IDs
+- [ ] Remove or deprecate "pilot" plan references in Stripe
+- [ ] Test checkout flow for all 3 tiers in Stripe test mode
+- [ ] Document in `STRIPE_SETUP.md`
+
+**Files to update:**
+- `app/controllers/registrations_controller.rb` - Update `stripe_price_id_for_plan` method
+- `docs/CREDENTIALS_SETUP.md` - Document new price IDs
+- `docs/STRIPE_SETUP.md` - Update setup instructions
 
 ---
 
@@ -111,13 +155,17 @@ The goal is to ensure first-time visitors (independent insurance agency owners) 
 - **FR-005:** ✅ Update "What CoverText Does NOT Do" section to clarify billing terminology and maintain explicit product boundaries
 - **FR-006:** ✅ Add footer navigation with "Contact", "Privacy Policy", and "Terms of Service" links on all public pages
 - **FR-007:** ✅ Adjust compliance/trust language to avoid legal overclaims while maintaining professional credibility
+- **FR-008:** ❌ Pass selected pricing tier from marketing page CTAs to signup flow via URL parameter
+- **FR-009:** ❌ Update signup page to display selected tier and remove manual plan selection
+- **FR-010:** ❌ Configure Stripe with 3 pricing tiers (Starter/Professional/Enterprise) and map to subscription creation flow
 
 ## Non-Goals (Out of Scope)
 
 - No demo scheduling flow or contact forms (Enterprise uses "Contact Sales" placeholder)
-- No testimonials or case studies
-- No AI/LLM messaging or features
-- No changes to logged-in admin UI (except removing "Pilot" references where appropriate)
+- No testimontier enforcement beyond Stripe subscription (honor system for limits)
+- No graphic logo design work (text wordmark only)
+- No major visual redesign—reuse existing Tailwind/DaisyUI components
+- No billing admin UI changes (can update post-launch)s where appropriate)
 - No backend pricing tier enforcement (billing logic remains single-tier for now)
 - No graphic logo design work (text wordmark only)
 - No major visual redesign—reuse existing Tailwind/DaisyUI components
@@ -147,10 +195,48 @@ The goal is to ensure first-time visitors (independent insurance agency owners) 
 - Public pages feel trustworthy to insurance agency owners
 - Clear understanding of 3 pricing tiers and when to choose each
 - No confusion about "Pilot" vs "Free Trial" language
-- Consistent CTA language across all touchpoints
+- Visitors can click a pricing tier's CTA and sign up for that specific tier without re-selecting
+- Stripe subscription created with correct price ID for selected tier
 
-## Open Questions
+## Implementation Notes
 
-- Should we update billing admin UI to remove "Pilot" plan references?
-- Should signup flow present all 3 pricing tiers or default to Starter?
+### Tier Selection Flow
+1. User clicks "Get Started" on Professional tier pricing card
+2. Marketing page redirects to `/signup?plan=professional`
+3. Signup page reads plan parameter, displays "Start Your Free Trial - Professional Plan"
+4. On form submit, registration controller maps "professional" → Stripe price ID for Professional tier
+5. Stripe subscription created, user redirected to admin dashboard
+
+### Stripe Price ID Mapping
+```ruby
+# app/controllers/registrations_controller.rb
+def stripe_price_id_for_plan(plan)
+  case plan
+  when "starter"
+    Rails.application.credentials.dig(:stripe, :starter_price_id)
+  when "professional"
+    Rails.application.credentials.dig(:stripe, :professional_price_id)
+  when "enterprise"
+    Rails.application.credentials.dig(:stripe, :enterprise_price_id)
+  else
+    Rails.application.credentials.dig(:stripe, :starter_price_id) # default
+  end
+end
+```
+
+### Stripe Configuration Required
+Create products and prices in Stripe dashboard or via API:
+- **Starter Plan:** $49/month (price_starter_monthly) and $490/year (price_starter_yearly)
+- **Professional Plan:** $99/month (price_pro_monthly) and $950/year (price_pro_yearly)
+- **Enterprise Plan:** $199/month (price_ent_monthly) and $1990/year (price_ent_yearly)
+
+Store price IDs in Rails credentials:
+```yaml
+stripe:
+  starter_price_id: price_xxx
+  professional_price_id: price_xxx
+  enterprise_price_id: price_xxx
+```
+
+Note: Marketing page toggle shows monthly/yearly prices, but Stripe integration currently uses monthly pricing only. Annual billing can be added in a future iteration.
 - Do we need to enforce tier limits in backend logic, or keep it honor-system for now?
