@@ -61,6 +61,42 @@ CoverText is a Rails 8 B2B SaaS for SMS-based insurance client service. The text
 - Use `phone_mobile` for client phone numbers
 - Use `phone_sms` for agency Twilio numbers
 
+## FormObject Pattern
+
+### Convention
+- FormObjects go in `app/models/forms/` directory
+- Use `Forms::` namespace (e.g., `Forms::Registration`, not `RegistrationForm`)
+- Tests go in `test/models/forms/`
+- Use for multi-model forms or complex form logic that doesn't belong in a single model
+
+### Pattern
+```ruby
+class Forms::Registration
+  include ActiveModel::Model
+  include ActiveModel::Attributes
+
+  attribute :field_name, :type
+  validates :field_name, presence: true
+
+  def save
+    return false unless valid?
+    ActiveRecord::Base.transaction do
+      # Create/update multiple models
+    end
+    true
+  rescue ActiveRecord::RecordInvalid => e
+    # Copy errors from nested models
+    false
+  end
+end
+```
+
+### When to Use
+- Forms touching multiple models (Account + Agency + User)
+- Complex validations spanning multiple models
+- Custom form logic that doesn't fit single-model responsibilities
+- NOT for simple single-model forms (use model directly)
+
 ## Controller Patterns
 
 ### Helper Methods (Always Use These)

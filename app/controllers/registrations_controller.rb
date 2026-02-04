@@ -4,7 +4,7 @@ class RegistrationsController < ApplicationController
   skip_before_action :require_authentication
 
   def new
-    @registration = RegistrationForm.new
+    @registration = Forms::Registration.new
     @selected_plan = selected_plan_from_params
     @plan_info = Plan.info(@selected_plan)
   end
@@ -14,7 +14,7 @@ class RegistrationsController < ApplicationController
     plan = params[:plan]&.to_sym
     plan = Plan.default unless Plan.valid?(plan)
 
-    @registration = RegistrationForm.new(
+    @registration = Forms::Registration.new(
       account_name: params[:registration]&.dig(:account_name),
       plan_tier: plan.to_s,
       agency_name: params[:registration]&.dig(:agency_name),

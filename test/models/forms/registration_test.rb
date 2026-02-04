@@ -1,8 +1,8 @@
 require "test_helper"
 
-class RegistrationFormTest < ActiveSupport::TestCase
+class Forms::RegistrationTest < ActiveSupport::TestCase
   test "validates presence of all required fields" do
-    form = RegistrationForm.new
+    form = Forms::Registration.new
     assert_not form.valid?
     assert_includes form.errors[:account_name], "can't be blank"
     assert_includes form.errors[:plan_tier], "can't be blank"
@@ -14,25 +14,25 @@ class RegistrationFormTest < ActiveSupport::TestCase
   end
 
   test "validates plan_tier is valid" do
-    form = RegistrationForm.new(plan_tier: "invalid")
+    form = Forms::Registration.new(plan_tier: "invalid")
     assert_not form.valid?
     assert_includes form.errors[:plan_tier], "is not included in the list"
   end
 
   test "validates user_email format" do
-    form = RegistrationForm.new(user_email: "invalid")
+    form = Forms::Registration.new(user_email: "invalid")
     assert_not form.valid?
     assert_includes form.errors[:user_email], "is invalid"
   end
 
   test "validates user_password minimum length" do
-    form = RegistrationForm.new(user_password: "short")
+    form = Forms::Registration.new(user_password: "short")
     assert_not form.valid?
     assert_includes form.errors[:user_password], "is too short (minimum is 8 characters)"
   end
 
   test "validates user_email uniqueness" do
-    form = RegistrationForm.new(
+    form = Forms::Registration.new(
       account_name: "Test Account",
       plan_tier: "starter",
       agency_name: "Test Agency",
@@ -46,7 +46,7 @@ class RegistrationFormTest < ActiveSupport::TestCase
   end
 
   test "save creates Account, Agency, and User" do
-    form = RegistrationForm.new(
+    form = Forms::Registration.new(
       account_name: "New Test Account",
       plan_tier: "professional",
       agency_name: "New Test Agency",
@@ -78,13 +78,13 @@ class RegistrationFormTest < ActiveSupport::TestCase
   end
 
   test "save returns false when validation fails" do
-    form = RegistrationForm.new(account_name: "")
+    form = Forms::Registration.new(account_name: "")
     assert_not form.save
     assert form.errors.any?
   end
 
   test "save rolls back transaction on error" do
-    form = RegistrationForm.new(
+    form = Forms::Registration.new(
       account_name: "Rollback Test",
       plan_tier: "starter",
       agency_name: "Rollback Agency",

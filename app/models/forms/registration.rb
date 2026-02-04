@@ -1,4 +1,4 @@
-class RegistrationForm
+class Forms::Registration
   include ActiveModel::Model
   include ActiveModel::Attributes
 
