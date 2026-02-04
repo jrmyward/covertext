@@ -199,7 +199,7 @@ Creates Account + Agency + User in transaction:
 - Use `.exists?(condition)` for efficient existence checks
 
 ### Seed Tests
-- **Two duplicate files exist:** `seed_test.rb` AND `seeds_test.rb` - update both!
+- Located at: `test/models/seed_test.rb`
 - Current expectations: 1 Account, 2 Agencies, 1 User (owner), 4 Clients, 10 Policies, 10 Documents
 
 ## Database & Environment
