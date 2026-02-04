@@ -48,8 +48,15 @@ class Plan
     }
   }.freeze
 
-  def self.info(tier)
-    TIERS[tier.to_sym] || TIERS[:starter]
+  def self.info(tier, interval = :monthly)
+    plan_data = TIERS[tier.to_sym] || TIERS[:starter]
+
+    # Add dynamic price display based on interval
+    plan_data.merge(
+      monthly_price_display: "$#{plan_data[:monthly_price]}/month",
+      yearly_price_display: "$#{plan_data[:yearly_price]}/year",
+      price_display: interval == :yearly ? "$#{plan_data[:yearly_price]}/year" : "$#{plan_data[:monthly_price]}/month"
+    )
   end
 
   def self.valid?(tier)

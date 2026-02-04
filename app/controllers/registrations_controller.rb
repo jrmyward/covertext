@@ -6,13 +6,17 @@ class RegistrationsController < ApplicationController
   def new
     @registration = Forms::Registration.new
     @selected_plan = selected_plan_from_params
-    @plan_info = Plan.info(@selected_plan)
+    @selected_interval = selected_interval_from_params
+    @plan_info = Plan.info(@selected_plan, @selected_interval)
   end
 
   def create
-    # Get selected plan, validate and default to starter
+    # Get selected plan and interval, validate and default
     plan = params[:plan]&.to_sym
     plan = Plan.default unless Plan.valid?(plan)
+
+    interval = params[:interval]&.to_sym
+    interval = :monthly unless [ :monthly, :yearly ].include?(interval)
 
     @registration = Forms::Registration.new(
       account_name: params[:registration]&.dig(:account_name),
@@ -31,21 +35,23 @@ class RegistrationsController < ApplicationController
         customer_email: @registration.user.email,
         mode: "subscription",
         line_items: [ {
-          price: stripe_price_id_for_plan(plan),
+          price: stripe_price_id_for_plan(plan, interval),
           quantity: 1
         } ],
-        success_url: signup_success_url(session_id: "{CHECKOUT_SESSION_ID}", plan: plan),
-        cancel_url: signup_url(plan: plan),
+        success_url: signup_success_url(session_id: "{CHECKOUT_SESSION_ID}", plan: plan, interval: interval),
+        cancel_url: signup_url(plan: plan, interval: interval),
         metadata: {
           account_id: @registration.account.id,
           agency_id: @registration.agency.id,
           user_id: @registration.user.id,
-          plan_tier: plan
+          plan_tier: plan,
+          billing_interval: interval
         },
         subscription_data: {
           metadata: {
             account_id: @registration.account.id,
-            plan_tier: plan
+            plan_tier: plan,
+            billing_interval: interval
           }
         }
       )
@@ -53,12 +59,14 @@ class RegistrationsController < ApplicationController
       redirect_to session.url, allow_other_host: true
     else
       @selected_plan = selected_plan_from_params
-      @plan_info = Plan.info(@selected_plan)
+      @selected_interval = selected_interval_from_params
+      @plan_info = Plan.info(@selected_plan, @selected_interval)
       render :new, status: :unprocessable_entity
     end
   rescue Stripe::StripeError => e
     @selected_plan = selected_plan_from_params
-    @plan_info = Plan.info(@selected_plan)
+    @selected_interval = selected_interval_from_params
+    @plan_info = Plan.info(@selected_plan, @selected_interval)
     flash[:alert] = "Payment setup failed: #{e.message}"
     render :new, status: :unprocessable_entity
   end
@@ -109,18 +117,15 @@ class RegistrationsController < ApplicationController
     Plan.valid?(plan) ? plan : Plan.default
   end
 
-  def stripe_price_id_for_plan(plan)
-    # These should be stored in credentials in production
-    case plan.to_sym
-    when :starter
-      Rails.application.credentials.dig(:stripe, :starter_price_id) || "price_starter_placeholder"
-    when :professional
-      Rails.application.credentials.dig(:stripe, :professional_price_id) || "price_professional_placeholder"
-    when :enterprise
-      Rails.application.credentials.dig(:stripe, :enterprise_price_id) || "price_enterprise_placeholder"
-    else
-      # Default to starter
-      Rails.application.credentials.dig(:stripe, :starter_price_id) || "price_starter_placeholder"
-    end
+  def selected_interval_from_params
+    interval = params[:interval]&.to_sym
+    [ :monthly, :yearly ].include?(interval) ? interval : :yearly
+  end
+
+  def stripe_price_id_for_plan(plan, interval = :yearly)
+    # Build credential key: starter_monthly_price_id, professional_yearly_price_id, etc.
+    key = "#{plan}_#{interval}_price_id".to_sym
+
+    Rails.application.credentials.dig(:stripe, key) || "price_#{plan}_#{interval}_placeholder"
   end
 end

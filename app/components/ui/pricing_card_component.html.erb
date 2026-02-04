@@ -39,5 +39,5 @@
     </ul>
   </div>
 
-  <%= link_to @cta_text, @cta_url, class: cta_classes %>
+  <%= link_to @cta_text, @cta_url, class: cta_classes, data: { pricing_target: "cta", plan: @tier.downcase } %>
 <% end %>
