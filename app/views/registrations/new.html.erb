@@ -3,28 +3,29 @@
 <%= render UI::SectionComponent.new(class_name: "min-h-screen flex items-center justify-center", inner_class: "w-full md:w-1/2 mx-auto") do %>
   <%= render UI::CardComponent.new do %>
     <div>
-      <h2 class="text-center text-3xl font-bold text-primary">Start Your Free Trial</h2>
+      <h2 class="text-center text-3xl font-bold text-primary">Create Your Account</h2>
       <p class="mt-2 text-center text-sm text-base-content/60">
         Sign up for the <span class="font-semibold"><%= @plan_info[:name] %> Plan</span>
       </p>
 
       <!-- Billing Interval Toggle -->
-      <div class="mt-4 flex justify-center">
-        <div class="inline-flex rounded-lg border border-base-300 p-1" data-controller="billing-interval" data-billing-interval-monthly-price-value="<%= @plan_info[:monthly_price] %>" data-billing-interval-yearly-price-value="<%= @plan_info[:yearly_price] %>">
-          <label class="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors has-[:checked]:bg-primary has-[:checked]:text-primary-content">
-            <input type="radio" name="billing_interval" value="monthly" class="sr-only" <%= 'checked' if @selected_interval == :monthly %> data-action="change->billing-interval#updatePrice">
-            <span>Monthly</span>
-          </label>
-          <label class="cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors has-[:checked]:bg-primary has-[:checked]:text-primary-content">
-            <input type="radio" name="billing_interval" value="yearly" class="sr-only" <%= 'checked' if @selected_interval == :yearly %> data-action="change->billing-interval#updatePrice">
-            <span>Yearly <span class="text-xs">(Save 20%)</span></span>
-          </label>
-        </div>
+      <div class="mt-4" data-controller="billing-interval" data-billing-interval-monthly-price-value="<%= @plan_info[:monthly_price] %>" data-billing-interval-yearly-price-value="<%= @plan_info[:yearly_price] %>">
+        <%= render UI::Form::BillingIntervalToggleComponent.new(
+          name: "billing_interval",
+          selected: @selected_interval,
+          show_badge: true,
+          badge_text: "Save 20%",
+          data: {
+            action: "change->billing-interval#updatePrice"
+          }
+        ) do |c| %>
+          <%= c.with_price_display do %>
+            <p class="mt-2 text-center text-2xl font-bold" data-billing-interval-target="priceDisplay">
+              <%= @selected_interval == :yearly ? @plan_info[:yearly_price_display] : @plan_info[:monthly_price_display] %>
+            </p>
+          <% end %>
+        <% end %>
       </div>
-
-      <p class="mt-2 text-center text-2xl font-bold" data-billing-interval-target="priceDisplay">
-        <%= @selected_interval == :yearly ? @plan_info[:yearly_price_display] : @plan_info[:monthly_price_display] %>
-      </p>
     </div>
 
     <%= form_with model: @registration, url: signup_path, scope: :registration, class: "mt-8 space-y-6" do |f| %>

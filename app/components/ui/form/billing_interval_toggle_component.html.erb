@@ -1,0 +1,29 @@
+<div class="flex justify-center" <%= tag.attributes(@data.except(:action)) %>>
+  <div role="tablist" class="tabs tabs-box relative w-fit">
+    <input
+      type="radio"
+      name="<%= @name %>"
+      role="tab"
+      value="monthly"
+      class="tab px-8"
+      aria-label="Monthly"
+      <% if @selected == :monthly %>checked<% end %>
+      <% if @data[:action] %>data-action="<%= @data[:action] %>"<% end %>>
+    <input
+      type="radio"
+      name="<%= @name %>"
+      role="tab"
+      value="yearly"
+      class="tab px-8"
+      aria-label="Yearly"
+      <% if @selected == :yearly %>checked<% end %>
+      <% if @data[:action] %>data-action="<%= @data[:action] %>"<% end %>>
+    <% if @show_badge %>
+      <span class="badge badge-success absolute -end-10 -top-2"><%= @badge_text %></span>
+    <% end %>
+  </div>
+</div>
+
+<% if price_display? %>
+  <%= price_display %>
+<% end %>

@@ -5,27 +5,13 @@
   </div>
 
   <!-- Monthly/Yearly Toggle -->
-  <div class="mt-8 flex justify-center">
-    <div role="tablist" class="tabs tabs-box relative w-fit">
-      <input
-        type="radio"
-        name="pricing-tab"
-        role="tab"
-        value="monthly"
-        class="tab px-8"
-        aria-label="Monthly"
-        data-action="change->pricing#updateAllUrls">
-      <input
-        type="radio"
-        name="pricing-tab"
-        role="tab"
-        class="tab px-8"
-        value="yearly"
-        aria-label="Yearly"
-        checked
-        data-action="change->pricing#updateAllUrls">
-      <span class="badge badge-success absolute -end-10 -top-2">Save 20%</span>
-    </div>
+  <div class="mt-8">
+    <%= render UI::Form::BillingIntervalToggleComponent.new(
+      name: "pricing-tab",
+      selected: :yearly,
+      show_badge: true,
+      data: { action: "change->pricing#updateAllUrls" }
+    ) %>
   </div>
 
   <%= content %>
