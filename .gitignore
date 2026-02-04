@@ -37,6 +37,8 @@ db/*sqlite3_*
 
 # Ignore key files for decrypting credentials and more.
 /config/*.key
+# Allow test.key since it only contains mock credentials for CI
+!/config/credentials/test.key
 
 # Ignore Kamal secrets
 /.kamal/secrets
