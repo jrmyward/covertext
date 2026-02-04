@@ -1,0 +1,17 @@
+---
+EnableDefaultLinters: true
+linters:
+  RequireInputAutocomplete:
+    enabled: true
+  ParserErrors:
+    enabled: true
+  SelfClosingTag:
+    enabled: true
+  RightTrim:
+    enabled: false
+  ClosingERBTagIndent:
+    enabled: true
+exclude:
+  - 'node_modules/**/*'
+  - 'vendor/**/*'
+  - 'tmp/**/*'

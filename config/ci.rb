@@ -4,6 +4,7 @@ CI.run do
   step "Setup", "bin/rails db:test:prepare"
 
   step "Style: Ruby", "bin/rubocop"
+  step "Style: ERB Templates", "bundle exec erb_lint --lint-all"
 
   step "Security: Gem audit", "bin/bundler-audit"
   step "Security: Importmap vulnerability audit", "bin/importmap audit"

@@ -27,14 +27,14 @@
         <label class="label text-neutral text-base font-semibold pb-1">
           <span class="label-text">Name (from payment info)</span>
         </label>
-        <input type="text" value="<%= "#{@registration.first_name} #{@registration.last_name}".strip %>" class="input input-bordered w-full" disabled>
+        <input type="text" value="<%= "#{@registration.first_name} #{@registration.last_name}".strip %>" class="input input-bordered w-full" disabled autocomplete="name">
       </div>
 
       <div class="form-control">
         <label class="label text-neutral text-base font-semibold pb-1">
           <span class="label-text">Email (from payment info)</span>
         </label>
-        <input type="email" value="<%= @registration.email %>" class="input input-bordered w-full" disabled>
+        <input type="email" value="<%= @registration.email %>" class="input input-bordered w-full" disabled autocomplete="email">
         <p class="mt-1 text-xs text-base-content/60">This will be your login email</p>
       </div>
 
@@ -48,7 +48,7 @@
           <label class="label text-neutral text-base font-semibold pb-1">
             <span class="label-text">Password</span>
           </label>
-          <%= password_field_tag :password, nil, class: "input input-bordered w-full", required: true, minlength: 8, placeholder: "Enter your password" %>
+          <%= password_field_tag :password, nil, class: "input input-bordered w-full", required: true, minlength: 8, placeholder: "Enter your password", autocomplete: "new-password" %>
           <p class="mt-1 text-xs text-base-content/60">Minimum 8 characters</p>
         </div>
 
@@ -56,7 +56,7 @@
           <label class="label text-neutral text-base font-semibold pb-1">
             <span class="label-text">Confirm Password</span>
           </label>
-          <%= password_field_tag :password_confirmation, nil, class: "input input-bordered w-full", required: true, minlength: 8, placeholder: "Confirm your password" %>
+          <%= password_field_tag :password_confirmation, nil, class: "input input-bordered w-full", required: true, minlength: 8, placeholder: "Confirm your password", autocomplete: "new-password" %>
         </div>
 
         <div>

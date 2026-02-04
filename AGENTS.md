@@ -237,14 +237,32 @@ bin/dev
 ```bash
 bin/rails test              # Run all tests
 bin/rails test:system       # Run system tests
-bin/ci                      # Full CI suite (rubocop, brakeman, bundler-audit, importmap audit, tests)
+bin/ci                      # Full CI suite (style, security, tests, seeds)
 ```
+
+### CI Pipeline
+The `bin/ci` command runs:
+1. **Setup:** `bin/rails db:test:prepare` (only touches test DB, not development)
+2. **Style checks:**
+   - `bin/rubocop` - Ruby code style
+   - `bundle exec erb_lint --lint-all` - ERB template linting (autocomplete attributes, closing tags, etc.)
+3. **Security audits:** bundler-audit, importmap audit, Brakeman
+4. **Tests:** Rails tests + seed replant verification
+
+**Important:** `bin/ci` no longer destroys development data (fixed Feb 2026). It only touches the test environment.
+
+### ERB Linting
+- Configuration: `.erb_lint.yml`
+- Checks for: missing autocomplete attributes, unclosed tags, accessibility issues
+- Run manually: `bundle exec erb_lint --lint-all`
+- Add autocomplete to all form inputs: `autocomplete="email"`, `autocomplete="name"`, `autocomplete="new-password"`, etc.
 
 ## CI Expectations
 - CI must be green before merging.
 - GitHub Actions: CI → Publish Docker → Deploy (sequential)
 - Security tools: Brakeman, bundler-audit, importmap audit must pass.
-- All tests must pass (currently 202 tests).
+- Style checks: Rubocop + ERB Lint must pass.
+- All tests must pass (currently 314 tests).
 
 ## Deployment
 - Kamal to production (see docs/DEPLOYMENT.md)

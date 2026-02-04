@@ -66,6 +66,9 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  # ERB template linting for accessibility and best practices
+  gem "erb_lint", require: false
 end
 
 group :development do

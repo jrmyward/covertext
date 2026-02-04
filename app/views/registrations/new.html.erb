@@ -38,7 +38,7 @@
           <label class="label text-neutral text-base font-semibold pb-1">
             <span class="label-text">Account Name</span>
           </label>
-          <%= text_field_tag :account_name, params[:account_name], class: "input input-bordered w-full", required: true, placeholder: "Reliable Insurance Group" %>
+          <%= text_field_tag :account_name, params[:account_name], class: "input input-bordered w-full", required: true, placeholder: "Reliable Insurance Group", autocomplete: "organization" %>
           <p class="mt-1 text-xs text-base-content/60">Your company or organization name</p>
         </div>
 
@@ -47,7 +47,7 @@
           <label class="label text-neutral text-base font-semibold pb-1">
             <span class="label-text">Agency Name</span>
           </label>
-          <%= text_field_tag :agency_name, params[:agency_name], class: "input input-bordered w-full", required: true, placeholder: "Downtown Office" %>
+          <%= text_field_tag :agency_name, params[:agency_name], class: "input input-bordered w-full", required: true, placeholder: "Downtown Office", autocomplete: "off" %>
           <p class="mt-1 text-xs text-base-content/60">Location or branch name</p>
         </div>
 
@@ -65,5 +65,6 @@
           </p>
         </div>
       <% end %>
+    </div>
   <% end %>
 <% end %>
