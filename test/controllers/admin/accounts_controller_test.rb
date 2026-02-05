@@ -72,13 +72,14 @@ module Admin
     test "owner sees Account link in nav" do
       sign_in(@owner)
       get admin_requests_path
-      assert_select "a[href=?]", admin_account_path, text: "Account"
+      assert_select "a[href=?]", admin_account_path, text: "Account Settings"
     end
 
-    test "admin does not see Account link in nav" do
+    test "admin sees Account Settings in user dropdown" do
       sign_in(@admin)
       get admin_requests_path
-      assert_select "a[href=?]", admin_account_path, count: 0
+      # Account Settings appears in dropdown menu for all users
+      assert_select "a[href=?]", admin_account_path, text: "Account Settings"
     end
   end
 end

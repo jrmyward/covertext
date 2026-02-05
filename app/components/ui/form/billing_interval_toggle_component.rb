@@ -39,7 +39,7 @@ module UI
         name: "pricing-tab",
         selected: :yearly,
         show_badge: true,
-        badge_text: "Save 20%",
+        badge_text: "2 months Free",
         data: {}
       )
         @name = name
