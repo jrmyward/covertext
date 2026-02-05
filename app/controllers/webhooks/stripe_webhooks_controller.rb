@@ -21,7 +21,9 @@ module Webhooks
 
       # Handle the event
       case event.type
-      when "customer.subscription.updated", "customer.subscription.deleted"
+      when "checkout.session.completed"
+        handle_checkout_completed(event.data.object)
+      when "customer.subscription.created", "customer.subscription.updated", "customer.subscription.deleted"
         handle_subscription_update(event.data.object)
       when "invoice.payment_succeeded"
         handle_payment_success(event.data.object)
@@ -33,6 +35,23 @@ module Webhooks
     end
 
     private
+
+    def handle_checkout_completed(session)
+      # Update account with Stripe IDs from the checkout session
+      account_id = session.metadata&.account_id
+      return unless account_id
+
+      account = Account.find_by(id: account_id)
+      return unless account
+
+      # Update account with Stripe customer and subscription IDs
+      account.update!(
+        stripe_customer_id: session.customer,
+        stripe_subscription_id: session.subscription
+      )
+
+      Rails.logger.info "Checkout completed for account #{account.id}: customer=#{session.customer}, subscription=#{session.subscription}"
+    end
 
     def handle_subscription_update(subscription)
       account = find_account_for_subscription(subscription)
