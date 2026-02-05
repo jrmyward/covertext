@@ -28,12 +28,12 @@
 
   <!-- What CoverText Does -->
 
-  <%= render UI::SectionComponent.new(bg: :light) do %>
+  <%= render UI::SectionComponent.new(bg: :light, id: "features") do %>
     <h3 class="text-3xl font-bold text-center mb-12">What CoverText Does</h3>
     <div class="grid md:grid-cols-3 gap-8">
       <%= render UI::CardComponent.new do %>
         <div class="text-4xl mb-4">📱</div>
-        <h4 class="card-title">Clients Text Your Number</h4>
+        <h4 class="card-title">Clients Text Your Dedicated Number</h4>
         <p>Your agency gets a dedicated SMS number. Clients text it just like they'd call.</p>
       <% end %>
       <%= render UI::CardComponent.new do %>
@@ -95,7 +95,7 @@
   <% end %>
 
   <!-- How It Works -->
-  <%= render UI::SectionComponent.new do %>
+  <%= render UI::SectionComponent.new(id: "how-it-works") do %>
     <h3 class="text-3xl font-bold text-center mb-12">How It Works</h3>
     <div class="grid md:grid-cols-4 gap-8">
       <%= render UI::StepComponent.new(
@@ -150,8 +150,9 @@
 
   <!-- Pricing -->
   <%= render UI::PricingSectionComponent.new(
+    id: "pricing",
     title: "Simple, Transparent Pricing",
-    subtitle: "Choose the plan that fits your agency. All plans include unlimited texts."
+    subtitle: "Choose the plan that fits your agency. All plans include unlimited texts. A dedicated number is the phone number your clients text for insurance documents and information."
   ) do %>
     <div class="mt-8 grid gap-8 lg:grid-cols-3">
       <%= render UI::PricingCardComponent.new(
@@ -213,6 +214,72 @@
         header_bg: "bg-secondary/10",
         header_color: "text-secondary"
       ) %>
+    </div>
+  <% end %>
+
+  <!-- FAQ -->
+  <%= render UI::SectionComponent.new(bg: :light, id: "faq") do %>
+    <h3 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h3>
+    <div class="max-w-3xl mx-auto space-y-6">
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion" checked>
+        <div class="collapse-title text-xl font-medium">
+          Is CoverText compliant with SMS regulations?
+        </div>
+        <div class="collapse-content">
+          <p>Yes. CoverText supports all required SMS commands (STOP, START, HELP) and enforces opt-out requests immediately. Every message and delivery is logged for compliance auditing.</p>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion">
+        <div class="collapse-title text-xl font-medium">
+          Do my clients need an app?
+        </div>
+        <div class="collapse-content">
+          <p>No. Clients use their standard SMS app. There's nothing to download or install. They simply text your agency's dedicated number.</p>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion">
+        <div class="collapse-title text-xl font-medium">
+          What happens if a request isn't supported?
+        </div>
+        <div class="collapse-content">
+          <p>CoverText responds with a professional message letting the client know we'll have someone call them back. This ensures clients never feel ignored while keeping staff in control of complex requests.</p>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion">
+        <div class="collapse-title text-xl font-medium">
+          Does CoverText change policies or accept payments?
+        </div>
+        <div class="collapse-content">
+          <p>No. CoverText only handles document delivery and information lookups. Policy changes, quotes, underwriting, and payment processing remain with your agency and licensed staff.</p>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion">
+        <div class="collapse-title text-xl font-medium">
+          Can I have more than one phone number?
+        </div>
+        <div class="collapse-content">
+          <p>Yes. The Starter plan includes 1 dedicated SMS number. Professional plans support up to 3 numbers, and Enterprise plans support unlimited numbers for agencies with multiple locations or brands.</p>
+        </div>
+      </div>
+
+      <div class="collapse collapse-plus bg-base-100 shadow">
+        <input type="radio" name="faq-accordion">
+        <div class="collapse-title text-xl font-medium">
+          Can I cancel anytime?
+        </div>
+        <div class="collapse-content">
+          <p>Yes. There are no long-term contracts. You can cancel your subscription at any time through the billing portal.</p>
+        </div>
+      </div>
     </div>
   <% end %>
 

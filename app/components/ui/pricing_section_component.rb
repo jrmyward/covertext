@@ -25,9 +25,10 @@ module UI
   #   <% end %>
   #
   class PricingSectionComponent < ViewComponent::Base
-    def initialize(title:, subtitle:)
+    def initialize(title:, subtitle:, **kwargs)
       @title = title
       @subtitle = subtitle
+      @kwargs = kwargs
     end
   end
 end

@@ -46,7 +46,8 @@ module UI
     test "wraps content in UI::SectionComponent with group class" do
       render_inline(PricingSectionComponent.new(
         title: "Pricing Plans",
-        subtitle: "Choose your plan"
+        subtitle: "Choose your plan",
+        id: "pricing"
       ))
 
       assert_selector "section#pricing"

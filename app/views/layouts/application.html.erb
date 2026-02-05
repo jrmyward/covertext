@@ -40,10 +40,10 @@
           </div>
           <div class="max-lg:hidden">
             <ul class="menu menu-horizontal gap-2 px-1">
-              <li class="font-medium"><a href="#features">Features</a></li>
-              <li class="font-medium"><a href="#integrations">Integrations</a></li>
-              <li class="font-medium"><a href="#pricing">Pricing</a></li>
-              <li class="font-medium"><a href="#faq">FAQ</a></li>
+              <li class="font-medium"><%= link_to "Features", root_path(anchor: "features") %></li>
+              <li class="font-medium"><%= link_to "How It Works", root_path(anchor: "how-it-works") %></li>
+              <li class="font-medium"><%= link_to "Pricing", root_path(anchor: "pricing") %></li>
+              <li class="font-medium"><%= link_to "FAQ", root_path(anchor: "faq") %></li>
             </ul>
           </div>
           <div class="space-x-2">
@@ -59,11 +59,11 @@
             <div class="bg-base-100 min-h-full w-60 p-5">
               <%= link_to "CoverText", root_path, class: "text-xl font-bold text-primary" %>
               <ul class="menu w-full gap-2 p-0 pt-4">
-                <li class="font-medium"><a href="#home">Home</a></li>
-                <li class="font-medium"><a href="#features">Features</a></li>
-                <li class="font-medium"><a href="#integrations">Integrations</a></li>
-                <li class="font-medium"><a href="#pricing">Pricing</a></li>
-                <li class="font-medium"><a href="#faq">FAQ</a></li>
+                <li class="font-medium"><%= link_to "Home", root_path %></li>
+                <li class="font-medium"><%= link_to "Features", root_path(anchor: "features") %></li>
+                <li class="font-medium"><%= link_to "How It Works", root_path(anchor: "how-it-works") %></li>
+                <li class="font-medium"><%= link_to "Pricing", root_path(anchor: "pricing") %></li>
+                <li class="font-medium"><%= link_to "FAQ", root_path(anchor: "faq") %></li>
               </ul>
             </div>
           </div>

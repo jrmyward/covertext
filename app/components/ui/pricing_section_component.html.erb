@@ -1,4 +1,4 @@
-<%= render UI::SectionComponent.new(py: "py-8 lg:py-20", tag: :section, id: "pricing", inner_class: "group", data: { controller: "pricing" }) do %>
+<%= render UI::SectionComponent.new(py: "py-8 lg:py-20", tag: :section, inner_class: "group", data: { controller: "pricing" }, **@kwargs) do %>
   <div class="text-center">
     <h2 class="mb-4 text-3xl font-bold"><%= @title %></h2>
     <p class="text-base-content/70 mb-8"><%= @subtitle %></p>
