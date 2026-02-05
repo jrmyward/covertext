@@ -48,6 +48,18 @@ module UI
         @badge_text = badge_text
         @data = data
       end
+
+      def monthly_checked?
+        @selected == :monthly
+      end
+
+      def yearly_checked?
+        @selected == :yearly
+      end
+
+      def data_action_attr
+        @data[:action] if @data[:action]
+      end
     end
   end
 end

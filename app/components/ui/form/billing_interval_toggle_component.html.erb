@@ -7,8 +7,8 @@
       value="monthly"
       class="tab px-8"
       aria-label="Monthly"
-      <% if @selected == :monthly %> checked<% end %>
-      <% if @data[:action] %> data-action="<%= @data[:action] %>"<% end %>>
+      <%= "checked" if monthly_checked? %>
+      <%= "data-action=#{data_action_attr}" if data_action_attr %>>
     <input
       type="radio"
       name="<%= @name %>"
@@ -16,8 +16,8 @@
       value="yearly"
       class="tab px-8"
       aria-label="Yearly"
-      <% if @selected == :yearly %> checked<% end %>
-      <% if @data[:action] %> data-action="<%= @data[:action] %>"<% end %>>
+      <%= "checked" if yearly_checked? %>
+      <%= "data-action=#{data_action_attr}" if data_action_attr %>>
     <% if @show_badge %>
       <span class="badge badge-success absolute -end-10 -top-2"><%= @badge_text %></span>
     <% end %>
