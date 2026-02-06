@@ -69,10 +69,10 @@ module Webhooks
     def verify_telnyx_signature!
       signature = request.headers["Telnyx-Signature-Ed25519"]
       timestamp = request.headers["Telnyx-Timestamp-Seconds"]
-      webhook_secret = TelnyxClient.webhook_secret
+      public_key = TelnyxClient.public_key
 
-      unless webhook_secret
-        Rails.logger.error "[TelnyxInbound] No webhook secret configured"
+      unless public_key
+        Rails.logger.error "[TelnyxInbound] No public key configured"
         head :unauthorized
         return
       end
@@ -82,7 +82,7 @@ module Webhooks
           request.body.read,
           signature,
           timestamp,
-          webhook_secret
+          public_key
         )
       rescue Telnyx::SignatureVerificationError => e
         Rails.logger.error "[TelnyxInbound] Signature verification failed: #{e.message}"

@@ -28,9 +28,10 @@ module TelnyxClient
       end
     end
 
-    def webhook_secret
+    def public_key
       # Try Rails credentials first, fall back to ENV
-      Rails.application.credentials.dig(:telnyx, :webhook_secret) || ENV["TELNYX_WEBHOOK_SECRET"]
+      # This is the Ed25519 public key from your Telnyx messaging profile
+      Rails.application.credentials.dig(:telnyx, :public_key) || ENV["TELNYX_PUBLIC_KEY"]
     end
 
     def reset!
