@@ -27,6 +27,8 @@ module ActiveSupport
       TwilioClient.reset!
       # Stub Stripe API calls by default
       stub_stripe_api_calls
+      # Stub Telnyx gem methods
+      stub_telnyx_gem
     end
 
     # Add more helper methods to be used by all tests here...
@@ -55,6 +57,35 @@ module ActiveSupport
         body: { id: "stub_response" }.to_json,
         headers: { "Content-Type" => "application/json" }
       )
+
+      # Stub Telnyx API calls (Message.create)
+      stub_request(:post, "https://api.telnyx.com/v2/messages")
+        .to_return(
+          status: 200,
+          body: {
+            data: {
+              id: "test_message_id_#{SecureRandom.hex(4)}",
+              record_type: "message",
+              direction: "outbound",
+              type: "SMS",
+              from: { phone_number: "+15551234567" },
+              to: [ { phone_number: "+15559876543", status: "queued" } ],
+              text: "Test message",
+              cost: { amount: "0.0040", currency: "USD" }
+            }
+          }.to_json,
+          headers: { "Content-Type" => "application/json" }
+        )
+    end
+
+    def stub_telnyx_gem
+      # Set Telnyx API key for tests
+      ::Telnyx.api_key = ENV["TELNYX_API_KEY"]
+
+      # Stub Telnyx::Message.create to return a mock response
+      ::Telnyx::Message.define_singleton_method(:create) do |**args|
+        OpenStruct.new(id: "test_msg_#{SecureRandom.hex(4)}")
+      end
     end
   end
 end

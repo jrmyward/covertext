@@ -69,7 +69,7 @@ module Webhooks
     def verify_telnyx_signature!
       signature = request.headers["Telnyx-Signature-Ed25519"]
       timestamp = request.headers["Telnyx-Timestamp-Seconds"]
-      public_key = TelnyxClient.public_key
+      public_key = Rails.application.credentials.dig(:telnyx, :public_key) || ENV["TELNYX_PUBLIC_KEY"]
 
       unless public_key
         Rails.logger.error "[TelnyxInbound] No public key configured"

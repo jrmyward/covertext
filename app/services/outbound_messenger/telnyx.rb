@@ -2,8 +2,11 @@ module OutboundMessenger
   class Telnyx
     class << self
       def send_sms!(agency:, to_phone:, body:, request: nil)
+        # Ensure API key is set
+        ensure_api_key!
+
         # Send via Telnyx
-        response = TelnyxClient.client.Message.create(
+        response = ::Telnyx::Message.create(
           from: agency.phone_sms,
           to: to_phone,
           text: body
@@ -39,8 +42,11 @@ module OutboundMessenger
       end
 
       def send_mms!(agency:, to_phone:, body:, media_url:, request: nil)
+        # Ensure API key is set
+        ensure_api_key!
+
         # Send via Telnyx
-        response = TelnyxClient.client.Message.create(
+        response = ::Telnyx::Message.create(
           from: agency.phone_sms,
           to: to_phone,
           text: body,
@@ -89,6 +95,18 @@ module OutboundMessenger
         )
 
         raise e
+      end
+
+      private
+
+      def ensure_api_key!
+        return if ::Telnyx.api_key.present?
+        return if Rails.env.test? # Skip API key check in tests
+
+        api_key = Rails.application.credentials.dig(:telnyx, :api_key) || ENV["TELNYX_API_KEY"]
+        raise "Telnyx API key not configured" unless api_key
+
+        ::Telnyx.api_key = api_key
       end
     end
   end
