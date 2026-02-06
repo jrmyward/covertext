@@ -53,10 +53,9 @@ module Webhooks
       end
 
       begin
-        Telnyx::Webhook::Signature.verify(
+        Telnyx::Webhook.construct_event(
           request.body.read,
           signature,
-          timestamp,
           public_key
         )
       rescue Telnyx::SignatureVerificationError => e
