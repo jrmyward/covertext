@@ -1,4 +1,6 @@
 class Agency < ApplicationRecord
+  include Agency::Readiness
+
   belongs_to :account
 
   has_many :clients, dependent: :destroy

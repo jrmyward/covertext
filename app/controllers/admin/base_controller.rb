@@ -10,5 +10,11 @@ module Admin
       @current_agency ||= current_user.account.agencies.where(active: true).first
     end
     helper_method :current_agency
+
+    def require_phone_provisioned
+      return if current_agency&.phone_ready?
+
+      redirect_to admin_dashboard_path, alert: "Please provision a phone number before accessing Requests"
+    end
   end
 end

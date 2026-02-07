@@ -13,7 +13,7 @@ account = Account.create!(
   subscription_status: "active"
 )
 
-# Create Agencies (2 locations/brands under the same account)
+# Create Agencies (2 ready agencies + 1 not-ready for testing provisioning flow)
 puts "🏢 Creating agencies..."
 agency_downtown = Agency.create!(
   name: "Reliable Insurance - Downtown",
@@ -27,6 +27,14 @@ agency_westside = Agency.create!(
   phone_sms: "+15551234568",
   account: account,
   active: true
+)
+
+agency_not_ready = Agency.create!(
+  name: "Reliable Insurance - New Branch",
+  phone_sms: nil,  # No phone number yet - for testing provisioning flow
+  account: account,
+  active: true,
+  live_enabled: false
 )
 
 # Create owner User

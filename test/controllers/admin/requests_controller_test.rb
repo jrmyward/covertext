@@ -18,6 +18,24 @@ class Admin::RequestsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "redirects to dashboard when phone not provisioned" do
+    # Create a user for the not-ready agency
+    not_ready_agency = agencies(:not_ready)
+    user = User.create!(
+      account: not_ready_agency.account,
+      first_name: "Test",
+      last_name: "User",
+      email: "test_notready@example.com",
+      password: "password123",
+      role: "admin"
+    )
+    sign_in(user)
+
+    get admin_requests_path
+    assert_redirected_to admin_dashboard_path
+    assert_equal "Please provision a phone number before accessing Requests", flash[:alert]
+  end
+
   test "authenticated user can access request show" do
     sign_in(@john)
 

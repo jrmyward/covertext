@@ -262,7 +262,8 @@ The `bin/ci` command runs:
 - GitHub Actions: CI → Publish Docker → Deploy (sequential)
 - Security tools: Brakeman, bundler-audit, importmap audit must pass.
 - Style checks: Rubocop + ERB Lint must pass.
-- All tests must pass (currently 314 tests).
+- All tests must pass (currently 361 tests).
+- **Known issue:** Some tests fail when run after db:seed in full suite but pass individually (see Known Test Issues below).
 
 ## Deployment
 - Kamal to production (see docs/DEPLOYMENT.md)
@@ -305,12 +306,15 @@ Ralph reads AGENTS.md and copilot-instructions.md on every iteration, so updatin
 - Ralph story sizing: one story = one iteration (too big = runs out of context)
 
 ## Known Test Issues
-- **Flaky test failures (Feb 2026)**:
-  - When running full test suite: 315 runs, 850 assertions, 9 failures, 6 errors
-  - When running individually: All registration/signup tests PASS
+- **Flaky test failures (Updated Feb 2026)**:
+  - When running full test suite: 361 runs, 1167 assertions, ~6 failures (varies by run)
+  - When running individually: All affected tests PASS
   - Root cause: Test pollution or env var issues when tests run after db:seed
-  - Errors: "Stripe::AuthenticationError: No API key provided" in Forms::RegistrationTest
-  - Failures: 422/302 responses in registrations controller and signup flow tests
+  - Affected test files:
+    - Forms::RegistrationTest (Stripe::AuthenticationError)
+    - Registrations controller tests (422/302 responses)
+    - Signup flow tests (422/302 responses)
+    - Admin::PhoneProvisioningController tests (ENV var pollution)
   - Core functionality verified working in browser UI ✅
   - Affected tests pass individually, fail in full suite
   - This is a test infrastructure issue, not a code issue
@@ -318,8 +322,8 @@ Ralph reads AGENTS.md and copilot-instructions.md on every iteration, so updatin
 
 - **Test environment notes**:
   - WebMock stubs for Stripe API configured in test_helper.rb
-  - ENV["STRIPE_SECRET_KEY"] set before Rails loads
-  - Some tests run after db:seed experience Stripe.api_key becoming nil
+  - ENV vars set before Rails loads in test_helper.rb
+  - Some tests run after db:seed experience ENV vars becoming nil or overridden
   - Tests disabled: parallelize(workers: 1) due to historical WebMock issues
 
 ## Rails Credentials & Test Environment

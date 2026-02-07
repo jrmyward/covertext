@@ -11,7 +11,7 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - Provide clear visibility into agency readiness state (Not Ready → Live)
 - Guide admins through required setup steps in the correct order
 - Block access to Requests page until phone number is provisioned
-- Enable one-click Twilio phone number provisioning from the dashboard
+- Enable one-click Telnyx phone number provisioning from the dashboard
 - Transition dashboard to monitoring/status mode once setup is complete
 - Reduce support inquiries related to "nothing is happening"
 
@@ -46,7 +46,7 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - [ ] `subscription_ready?` returns `account.subscription_active?`
 - [ ] `phone_ready?` returns `phone_sms.present?`
 - [ ] `fully_ready?` returns true only when subscription_ready? AND phone_ready?
-- [ ] Note: Webhook configuration is handled at Twilio Messaging Service level (already configured)
+- [ ] Note: Webhook configuration is handled at Telnyx Messaging Profile level (already configured)
 - [ ] Unit tests for all readiness states
 - [ ] All tests pass (bin/rails test)
 - [ ] Rubocop clean
@@ -102,20 +102,20 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - [ ] Rubocop clean
 - [ ] Verify in browser using dev server (bin/dev)
 
-### US-008: Twilio Phone Number Provisioning Service
-**Description:** As a developer, I need a service to purchase and configure Twilio phone numbers so agencies can receive SMS.
+### US-008: Telnyx Phone Number Provisioning Service
+**Description:** As a developer, I need a service to purchase and configure Telnyx phone numbers so agencies can receive SMS.
 
 **Acceptance Criteria:**
-- [ ] Create `TwilioPhoneProvisioningService` in `app/services/`
+- [ ] Create `Telnyx::PhoneProvisioningService` in `app/services/telnyx/`
 - [ ] Service accepts an `Agency` and provisions a number:
-  - **Idempotency:** Return success immediately if agency already has `phone_sms` present
-  - Searches for available local numbers in US
+  - **Idempotency:** Check performed in service - return success immediately if agency already has `phone_sms` present
+  - Searches for available toll-free numbers in US (following existing Telnyx patterns)
   - Purchases the first available number
-  - Adds purchased number to existing Twilio Messaging Service (webhooks configured at service level)
+  - Adds purchased number to existing Telnyx Messaging Profile (webhooks configured at profile level)
 - [ ] On success: updates `agency.phone_sms` with E.164 number, sets `agency.live_enabled = true`
 - [ ] On failure: returns error result with descriptive message
-- [ ] Raises clear error if Twilio credentials are missing
-- [ ] Unit tests with Twilio API mocked using WebMock (following test_helper.rb patterns)
+- [ ] Raises clear error if Telnyx credentials are missing
+- [ ] Unit tests with Telnyx API mocked using WebMock (following test_helper.rb patterns)
 - [ ] All tests pass (bin/rails test)
 - [ ] Rubocop clean
 
@@ -125,22 +125,23 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 **Acceptance Criteria:**
 - [ ] Add `Admin::PhoneProvisioningController` with `create` action
 - [ ] Route: `post "phone_provisioning", to: "phone_provisioning#create"` in admin namespace
-- [ ] Action calls `TwilioPhoneProvisioningService.new(current_agency).call`
+- [ ] Action calls `Telnyx::PhoneProvisioningService.new(current_agency).call`
 - [ ] On success: redirect to dashboard with flash success "Phone number provisioned successfully!"
 - [ ] On failure: redirect to dashboard with flash error containing failure reason
 - [ ] Action requires active subscription (rejects if `!current_account.subscription_active?`)
-- [ ] Tests with mocked Twilio service
+- [ ] Action requires owner role (rejects if `current_user.role != 'owner'`)
+- [ ] Tests with mocked Telnyx service
 - [ ] All tests pass (bin/rails test)
 - [ ] Rubocop clean
-
-### US-010: Twilio Provisioning Error Recovery
+elnyx Provisioning Error Recovery
 **Description:** As a developer, I need the system to handle partial provisioning failures gracefully so agencies don't end up in broken states.
 
 **Acceptance Criteria:**
-- [ ] If phone purchase succeeds but messaging service addition fails:
+- [ ] If phone purchase succeeds but messaging profile addition fails:
   - Log error with purchased phone number details
   - Return failure result (do not update agency)
-  - Include instructions in error message for manual cleanup
+  - Error message: "Phone number purchased but configuration failed. Please contact support with error code: [error_details]"
+- [ ] If any Telnyxtions in error message for manual cleanup
 - [ ] If any Twilio API call fails, do not update `agency.phone_sms` or `agency.live_enabled`
 - [ ] All database updates happen in a transaction (wrap in `ActiveRecord::Base.transaction`)
 - [ ] Service returns structured result object with success/failure status and message
@@ -161,16 +162,15 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - [ ] Rubocop clean
 - [ ] Verify in browser using dev server (bin/dev)
 
-### US-012: Add Twilio Credentials Documentation
-**Description:** As a developer, I need Twilio credentials documented so the provisioning service can be configured.
+### US-012: Add Telnyx Credentials Documentation
+**Description:** As a developer, I need Telnyx credentials documented so the provisioning service can be configured.
 
 **Acceptance Criteria:**
-- [ ] Update [docs/CREDENTIALS_SETUP.md](docs/CREDENTIALS_SETUP.md) with required Twilio credentials:
-  - `twilio.account_sid`
-  - `twilio.auth_token`
-  - `twilio.messaging_service_sid`
-- [ ] Document ENV var fallbacks: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_MESSAGING_SERVICE_SID`
-- [ ] Note: Inbound SMS webhooks configured at messaging service level (point to `/webhooks/twilio/inbound`)
+- [ ] Update [docs/CREDENTIALS_SETUP.md](docs/CREDENTIALS_SETUP.md) with required Telnyx credentials for provisioning:
+  - `telnyx.api_key` (already documented for messaging)
+  - `telnyx.messaging_profile_id` (for adding numbers to profile)
+- [ ] Document ENV var fallbacks: `TELNYX_API_KEY`, `TELNYX_MESSAGING_PROFILE_ID`
+- [ ] Note: Inbound SMS webhooks configured at messaging profile level (point to `/webhooks/telnyx/inbound`)
 - [ ] Service checks credentials and raises descriptive error if missing
 - [ ] All tests pass (bin/rails test)
 - [ ] Rubocop clean
@@ -205,7 +205,7 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - FR-4: Readiness checklist shall show: Subscription status, Phone provisioning status
 - FR-5: "Provision Phone Number" button shall be disabled when subscription is inactive
 - FR-6: Phone provisioning shall purchase a Twilio number, add it to messaging service, and update agency record atomically
-- FR-7: Phone provisioning success shall set `agency.phone_sms` and `agency.live_enabled = true`
+- FR-7: Phone provisioning success shall set elnyx toll-free number, add it to messaging profilled = true`
 - FR-8: Phone provisioning shall be idempotent (return success if phone already provisioned)
 - FR-9: Requests page shall redirect to Dashboard with message when phone not provisioned
 - FR-10: Navigation shall show Dashboard as primary, Requests as secondary
@@ -235,15 +235,17 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 
 ## Technical Considerations
 
-- **Twilio Gem:** Add `twilio-ruby` gem to Gemfile if not present (verify if considering future move to Telnyx)
-- **Credentials:** Twilio credentials stored in Rails encrypted credentials with ENV fallback (see test/test_helper.rb for test patterns)
-- **Messaging Service:** Webhooks configured at Twilio Messaging Service level, pointing to `/webhooks/twilio/inbound` (route already exists)
-- **Error Handling:** Twilio API errors should be caught and displayed as user-friendly flash messages
+- **Telnyx Gem:** Already installed and configured (see [docs/prd/complete/prd-telnyx-sms-integration.md](docs/prd/complete/prd-telnyx-sms-integration.md))
+- **Credentials:** Telnyx credentials stored in `development.yml.enc` and `production.yml.enc` with ENV fallback (see test/test_helper.rb for test patterns)
+- **Messaging Profile:** Webhooks configured at Telnyx Messaging Profile level, pointing to `/webhooks/telnyx/inbound` (route already exists)
+- **Error Handling:** Telnyx API errors should be caught and displayed as user-friendly flash messages
 - **Idempotency:** Provisioning should check if agency already has a phone number and return success immediately without API calls
 - **Existing Patterns:** Use `current_agency` and `current_account` helpers from `Admin::BaseController`
 - **Data Model:** Agency already has `live_enabled` boolean field (default: false) - no migration needed
-- **Test Mocking:** Use WebMock for Twilio API stubs (see test/test_helper.rb for existing patterns)
+- **Test Mocking:** Use WebMock for Telnyx API stubs (see test/test_helper.rb for existing Telnyx patterns)
 - **Dashboard Access:** Dashboard controller should skip `require_active_subscription` (similar to BillingController) so users can diagnose issues
+- **Role Restriction:** Phone provisioning action restricted to owner role only
+- **Subscription Causes:** When subscription is inactive, redirect to the appropriate remedy (billing page) with descriptive flash message explaining the specific issue
 
 ## Success Metrics
 
@@ -253,8 +255,9 @@ This feature introduces an Admin Dashboard as the primary post-login landing pag
 - Reduction in "nothing is happening" support tickets
 - Time from signup to live agency < 5 minutes
 
-## Open Questions
-
-- Should we store Twilio phone number SID (`phone_sid` field) for future management? (Can add if needed)
+## Open Questionselnyx phone number ID (`phone_sid` field) for future management? (Can add if needed)
+- Should we add a "test SMS" feature to verify the number works before going live?
+- Should Dashboard show guidance for testing the number after provisioning?
+- **Testing Strategy:** Should we use seed data with an agency without phone_sms for testing, or create proper fixtures? (Fixtures recommended for isolated, repeatable tests; seeds are for dev database only)nagement? (Can add if needed)
 - Should we add a "test SMS" feature to verify the number works before going live?
 - Should Dashboard show guidance for testing the number after provisioning?

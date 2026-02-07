@@ -28,7 +28,17 @@ You'll need:
   - Webhook Secret
   - Price IDs for live products
 
-### 2. Create Stripe Products
+### 2. Telnyx API Keys
+
+Sign up for a Telnyx account at https://telnyx.com
+
+You'll need:
+- **API Key** (from Telnyx Mission Control → API Keys)
+- **Messaging Profile ID** (from Telnyx Mission Control → Messaging → Messaging Profiles)
+  - Inbound webhooks must be configured at the messaging profile level to point to `/webhooks/telnyx/inbound`
+  - Phone numbers added to this profile will automatically use the configured webhooks
+
+### 3. Create Stripe Products
 
 In your Stripe Dashboard (test mode):
 
@@ -60,6 +70,10 @@ stripe:
   professional_price_id: price_1DEF456_YOUR_PROFESSIONAL_PRICE_ID
   enterprise_price_id: price_1GHI789_YOUR_ENTERPRISE_PRICE_ID
   webhook_secret: whsec_YOUR_WEBHOOK_SECRET
+
+telnyx:
+  api_key: YOUR_TELNYX_API_KEY
+  messaging_profile_id: YOUR_MESSAGING_PROFILE_ID
 ```
 
 **To get the webhook secret for local testing:**
@@ -97,6 +111,10 @@ stripe:
   pilot_price_id: price_1ABC123_YOUR_PILOT_PRICE_ID  # Can reuse dev products or create separate
   growth_price_id: price_1DEF456_YOUR_GROWTH_PRICE_ID
   webhook_secret: whsec_YOUR_STAGING_WEBHOOK_SECRET  # From Stripe Dashboard webhook endpoint
+
+telnyx:
+  api_key: YOUR_TELNYX_API_KEY  # Can use same as development
+  messaging_profile_id: YOUR_MESSAGING_PROFILE_ID
 ```
 
 **Why test mode for staging?**
@@ -143,6 +161,32 @@ bin/rails console
 Stripe.api_key
 # Should output: "sk_test_..."
 
+# Check Telnyx credentials
+Rails.application.credentials.dig(:telnyx, :api_key)
+# Should output your Telnyx API key
+
+Rails.application.credentials.dig(:telnyx, :messaging_profile_id)
+# Should output your messaging profile ID
+```
+
+## Environment Variable Fallbacks
+
+All credentials have ENV variable fallbacks for CI/testing:
+
+```bash
+# Stripe
+export STRIPE_SECRET_KEY="sk_test_..."
+export STRIPE_PUBLISHABLE_KEY="pk_test_..."
+
+# Telnyx
+export TELNYX_API_KEY="your_key"
+export TELNYX_MESSAGING_PROFILE_ID="your_profile_id"
+```
+
+These are useful for:
+- Running tests without credentials files
+- CI/CD environments
+- Docker deployments
 # Check price IDs
 Rails.application.credentials.dig(:stripe, :pilot_price_id)
 # Should output: "price_1ABC..."

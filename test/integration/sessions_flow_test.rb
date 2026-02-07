@@ -8,7 +8,7 @@ class SessionsFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     post login_path, params: { email: user.email, password: "password123" }
-    assert_redirected_to admin_requests_path
+    assert_redirected_to admin_dashboard_path
     follow_redirect!
     assert_response :success
   end

@@ -1,5 +1,7 @@
 module Admin
   class RequestsController < BaseController
+    before_action :require_phone_provisioned
+
     def index
       @requests = current_agency.requests.order(created_at: :desc)
 

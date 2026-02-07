@@ -5,3 +5,7 @@ reliable_group:
 acme_group:
   name: Acme Insurance Group
   subscription_status: active
+
+not_ready_account:
+  name: Not Ready Account
+  subscription_status: active

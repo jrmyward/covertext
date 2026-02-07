@@ -11,3 +11,11 @@ acme:
   settings: {}
   account: acme_group
   active: true
+
+not_ready:
+  name: Not Ready Agency
+  phone_sms: null
+  settings: {}
+  account: not_ready_account
+  active: true
+  live_enabled: false

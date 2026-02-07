@@ -1,0 +1,129 @@
+<div class="container mx-auto max-w-5xl">
+  <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+  <% if !@agency.fully_ready? %>
+    <!-- Setup State -->
+    <div class="card bg-base-100 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Get CoverText Ready</h2>
+        <p class="text-base-content/70 mb-6">Complete these steps to start receiving client SMS requests.</p>
+
+        <!-- Setup Checklist -->
+        <ul class="steps steps-vertical w-full">
+          <!-- Subscription Step -->
+          <li class="step <%= @agency.subscription_ready? ? 'step-primary' : '' %>" data-content="<%= @agency.subscription_ready? ? '✓' : '✗' %>">
+            <div class="text-left w-full pl-4">
+              <div class="font-semibold">Active Subscription</div>
+              <div class="text-sm text-base-content/70">
+                <% if @agency.subscription_ready? %>
+                  <%= @account.plan_name&.titleize || 'Basic' %> Plan Active
+                <% else %>
+                  Please <%= link_to "update your billing", admin_billing_path, class: "link link-hover" %> to activate your subscription
+                <% end %>
+              </div>
+            </div>
+          </li>
+
+          <!-- Phone Number Step -->
+          <li class="step <%= @agency.phone_ready? ? 'step-primary' : '' %>" data-content="<%= @agency.phone_ready? ? '✓' : '✗' %>">
+            <div class="text-left w-full pl-4">
+              <div class="font-semibold">Dedicated SMS Number</div>
+              <div class="text-sm text-base-content/70">
+                <% if @agency.phone_ready? %>
+                  <%= @agency.phone_sms %>
+                <% else %>
+                  A toll-free number will be provisioned for your agency
+                <% end %>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Provision Button -->
+        <% if !@agency.phone_ready? %>
+          <div class="card-actions justify-end mt-6">
+            <%= form_with url: admin_phone_provisioning_path, method: :post, class: "w-full sm:w-auto" do |f| %>
+              <%= f.button type: "submit",
+                    class: "btn btn-primary w-full sm:w-auto #{'btn-disabled' unless @agency.subscription_ready?}",
+                    disabled: !@agency.subscription_ready?,
+                    data: { turbo_submits_with: "Provisioning..." } do %>
+                <span class="w-5 h-5"><%= heroicon "phone", variant: :mini %></span>
+                Provision Phone Number
+              <% end %>
+            <% end %>
+            <% unless @agency.subscription_ready? %>
+              <p class="text-sm text-base-content/60 mt-2">
+                An active subscription is required to provision a phone number
+              </p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <!-- Live State -->
+    <div class="grid gap-6 md:grid-cols-2">
+      <!-- System Status Card -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">
+            <span class="size-6 text-success"><%= heroicon "check-circle", variant: :solid %></span>
+            System Ready
+          </h2>
+          <div class="divider my-2"></div>
+          
+          <div class="space-y-3">
+            <div>
+              <div class="text-sm text-base-content/70">SMS Number</div>
+              <div class="font-mono font-semibold"><%= @agency.phone_sms %></div>
+            </div>
+            
+            <div>
+              <div class="text-sm text-base-content/70">Subscription</div>
+              <div class="font-semibold">
+                <%= @account.plan_name&.titleize || 'Basic' %> Plan
+                <span class="badge badge-success badge-sm ml-2">Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Usage Summary Card -->
+      <div class="card bg-base-100 shadow-xl">
+        <div class="card-body">
+          <h2 class="card-title">
+            <span class="size-6"><%= heroicon "chart-bar", variant: :solid %></span>
+            Usage Summary
+          </h2>
+          <div class="divider my-2"></div>
+          
+          <div class="space-y-3">
+            <div>
+              <div class="text-sm text-base-content/70">Total Requests</div>
+              <div class="text-2xl font-bold"><%= @agency.requests.count %></div>
+            </div>
+            
+            <div>
+              <div class="text-sm text-base-content/70">Last Request</div>
+              <div class="font-semibold">
+                <% if @agency.requests.any? %>
+                  <%= time_ago_in_words(@agency.requests.order(created_at: :desc).first.created_at) %> ago
+                <% else %>
+                  No requests yet
+                <% end %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-actions justify-end mt-4">
+            <%= link_to admin_requests_path, class: "btn btn-sm btn-primary" do %>
+              View Requests
+              <span class="size-4"><%= heroicon "arrow-right", variant: :mini %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
