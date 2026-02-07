@@ -39,11 +39,11 @@ module Admin
     end
 
     test "shows subscription status" do
-      @account.update!(subscription_status: "active", plan_name: "pilot")
+      @account.update!(subscription_status: "active", plan_tier: "starter")
       sign_in(@owner)
       get admin_account_path
       assert_select ".badge", text: /Active/
-      assert_select "p", text: /Pilot/
+      assert_select "p", text: /Starter/
     end
 
     test "owner can update account name" do

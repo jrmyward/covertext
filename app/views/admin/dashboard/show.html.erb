@@ -15,7 +15,7 @@
               <div class="font-semibold">Active Subscription</div>
               <div class="text-sm text-base-content/70">
                 <% if @agency.subscription_ready? %>
-                  <%= @account.plan_name&.titleize || 'Basic' %> Plan Active
+                  <%= @account.plan_tier.titleize %> Plan Active
                 <% else %>
                   Please <%= link_to "update your billing", admin_billing_path, class: "link link-hover" %> to activate your subscription
                 <% end %>
@@ -78,7 +78,7 @@
           <div>
             <div class="text-sm text-base-content/70">Subscription</div>
             <div class="font-semibold">
-              <%= @account.plan_name&.titleize || 'Basic' %> Plan
+              <%= @account.plan_tier.titleize %> Plan
               <span class="badge badge-success badge-sm ml-2">Active</span>
             </div>
           </div>

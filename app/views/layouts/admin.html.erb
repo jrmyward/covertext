@@ -76,7 +76,7 @@
                 <span class="max-sm:hidden">, <%= current_user.first_name %>!</span>
               </p>
               <p class="mt-1 text-sm/none text-base-content/60 max-sm:hidden">
-                <%= current_account.name %> · <%= current_account.plan_name&.titleize || 'Basic' %> Plan
+                <%= current_account.name %> · <%= current_account.plan_tier.titleize %> Plan
               </p>
             </div>
           </div>

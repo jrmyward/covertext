@@ -23,12 +23,12 @@ module Admin
     test "displays subscription status" do
       @account.update!(
         subscription_status: "active",
-        plan_name: "pilot"
+        plan_tier: "professional"
       )
 
       get admin_billing_path
       assert_select ".badge", text: /Active/
-      assert_select "p", text: /Pilot/
+      assert_select "p", text: /Professional/
     end
 
     test "shows warning when no subscription exists" do
