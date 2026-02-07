@@ -6,131 +6,117 @@
     <%= link_to "← Back to Dashboard", admin_requests_path, class: "btn btn-ghost" %>
   </div>
 
-  <% if flash[:alert] %>
-    <div class="alert alert-error mb-6">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
-
   <div class="grid gap-6">
     <!-- Subscription Status Card -->
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Subscription Status</h2>
+    <%= render UI::CardComponent.new(class_name: "bg-base-200 shadow-xl") do %>
+      <h2 class="card-title">Subscription Status</h2>
 
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-          <div>
-            <p class="text-sm text-base-content/60">Plan</p>
-            <p class="text-lg font-bold">
-              <%= @account&.plan_tier&.titleize || "No Plan" %>
-            </p>
-          </div>
-
-          <div>
-            <p class="text-sm text-base-content/60">Status</p>
-            <p class="text-lg font-bold">
-              <% if @account&.subscription_status == "active" %>
-                <span class="badge badge-success badge-lg">Active</span>
-              <% elsif @account&.subscription_status == "past_due" %>
-                <span class="badge badge-warning badge-lg">Past Due</span>
-              <% elsif @account&.subscription_status == "canceled" %>
-                <span class="badge badge-error badge-lg">Canceled</span>
-              <% else %>
-                <span class="badge badge-ghost badge-lg"><%= @account&.subscription_status&.titleize || "None" %></span>
-              <% end %>
-            </p>
-          </div>
+      <div class="grid md:grid-cols-2 gap-4 mt-4">
+        <div>
+          <p class="text-sm text-base-content/60">Plan</p>
+          <p class="text-lg font-bold">
+            <%= @account&.plan_tier&.titleize || "No Plan" %>
+          </p>
         </div>
 
-        <% if @account&.stripe_customer_id.blank? %>
-          <div class="alert alert-warning mt-4">
+        <div>
+          <p class="text-sm text-base-content/60">Status</p>
+          <p class="text-lg font-bold">
+            <% if @account&.subscription_status == "active" %>
+              <span class="badge badge-success badge-lg">Active</span>
+            <% elsif @account&.subscription_status == "past_due" %>
+              <span class="badge badge-warning badge-lg">Past Due</span>
+            <% elsif @account&.subscription_status == "canceled" %>
+              <span class="badge badge-error badge-lg">Canceled</span>
+            <% else %>
+              <span class="badge badge-ghost badge-lg"><%= @account&.subscription_status&.titleize || "None" %></span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+
+      <% if @account&.stripe_customer_id.blank? %>
+        <div class="alert alert-warning mt-4">
+          <div>
+            <p>No active subscription found.</p>
+            <%= link_to "Set up subscription", signup_path, class: "btn btn-primary btn-sm mt-2" %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <!-- Live Status Card -->
+    <%= render UI::CardComponent.new(class_name: "bg-base-200 shadow-xl") do %>
+      <h2 class="card-title">Service Status</h2>
+
+      <div class="mt-4">
+        <div class="flex items-center gap-3">
+          <% if @agency.live_enabled? %>
+            <div class="badge badge-success badge-lg">Live & Active</div>
+            <p class="text-sm text-base-content/60">Your agency can send and receive messages</p>
+          <% else %>
+            <div class="badge badge-ghost badge-lg">Not Live</div>
+            <p class="text-sm text-base-content/60">Contact us to activate messaging</p>
+          <% end %>
+        </div>
+
+        <% unless @agency.live_enabled? %>
+          <div class="alert alert-info mt-4">
             <div>
-              <p>No active subscription found.</p>
-              <%= link_to "Set up subscription", signup_path, class: "btn btn-primary btn-sm mt-2" %>
+              <p class="font-bold">Your account is active, but not yet live.</p>
+              <p class="text-sm mt-1">
+                To start sending messages, we need to verify your agency and provision your Twilio number.
+                This ensures compliance with A2P messaging requirements.
+              </p>
+              <a href="mailto:hello@covertext.io?subject=Activate%20My%20Agency" class="btn btn-primary btn-sm mt-3">
+                Contact Us to Go Live
+              </a>
             </div>
           </div>
         <% end %>
       </div>
-    </div>
-
-    <!-- Live Status Card -->
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Service Status</h2>
-
-        <div class="mt-4">
-          <div class="flex items-center gap-3">
-            <% if @agency.live_enabled? %>
-              <div class="badge badge-success badge-lg">Live & Active</div>
-              <p class="text-sm text-base-content/60">Your agency can send and receive messages</p>
-            <% else %>
-              <div class="badge badge-ghost badge-lg">Not Live</div>
-              <p class="text-sm text-base-content/60">Contact us to activate messaging</p>
-            <% end %>
-          </div>
-
-          <% unless @agency.live_enabled? %>
-            <div class="alert alert-info mt-4">
-              <div>
-                <p class="font-bold">Your account is active, but not yet live.</p>
-                <p class="text-sm mt-1">
-                  To start sending messages, we need to verify your agency and provision your Twilio number.
-                  This ensures compliance with A2P messaging requirements.
-                </p>
-                <a href="mailto:hello@covertext.io?subject=Activate%20My%20Agency" class="btn btn-primary btn-sm mt-3">
-                  Contact Us to Go Live
-                </a>
-              </div>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    </div>
+    <% end %>
 
     <!-- Manage Subscription -->
     <% if @portal_session %>
-      <div class="card bg-base-200 shadow-xl">
-        <div class="card-body">
-          <h2 class="card-title">Manage Subscription</h2>
-          <p class="text-base-content/70">
-            Update your payment method, change plans, or cancel your subscription through the Stripe customer portal.
-          </p>
-          <div class="card-actions mt-4">
-            <%= link_to "Open Billing Portal", @portal_session.url,
-                class: "btn btn-primary",
-                target: "_blank",
-                data: { turbo: false } %>
-          </div>
+      <%= render UI::CardComponent.new(class_name: "bg-base-200 shadow-xl") do %>
+        <h2 class="card-title">Manage Subscription</h2>
+        <p class="text-base-content/70">
+          Update your payment method, change plans, or cancel your subscription through the Stripe customer portal.
+        </p>
+        <div class="card-actions mt-4">
+          <%= link_to "Open Billing Portal", @portal_session.url,
+              class: "btn btn-primary",
+              target: "_blank",
+              data: { turbo: false } %>
         </div>
-      </div>
+      <% end %>
     <% end %>
 
     <!-- Pricing Info -->
-    <div class="card bg-base-200 shadow-xl">
-      <div class="card-body">
-        <h2 class="card-title">Available Plans</h2>
-        <div class="grid md:grid-cols-3 gap-4 mt-4">
-          <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'starter' ? 'border-primary' : 'border-base-300' %>">
-            <h3 class="font-bold text-lg">Starter</h3>
-            <p class="text-2xl font-bold mt-2">$49<span class="text-sm text-base-content/60">/mo</span></p>
-            <p class="text-lg text-base-content/80 mt-1">$490<span class="text-sm text-base-content/60">/yr</span></p>
-            <p class="text-sm text-base-content/60 mt-2">Perfect for getting started</p>
-          </div>
-          <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'professional' ? 'border-primary' : 'border-base-300' %>">
-            <h3 class="font-bold text-lg">Professional</h3>
-            <p class="text-2xl font-bold mt-2">$99<span class="text-sm text-base-content/60">/mo</span></p>
-            <p class="text-lg text-base-content/80 mt-1">$950<span class="text-sm text-base-content/60">/yr</span></p>
-            <p class="text-sm text-base-content/60 mt-2">Higher volume, premium support</p>
-          </div>
-          <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'enterprise' ? 'border-primary' : 'border-base-300' %>">
-            <h3 class="font-bold text-lg">Enterprise</h3>
-            <p class="text-2xl font-bold mt-2">$199<span class="text-sm text-base-content/60">/mo</span></p>
-            <p class="text-lg text-base-content/80 mt-1">$1,990<span class="text-sm text-base-content/60">/yr</span></p>
-            <p class="text-sm text-base-content/60 mt-2">Advanced features, dedicated support</p>
-          </div>
+    <%= render UI::CardComponent.new(class_name: "bg-base-200 shadow-xl") do %>
+      <h2 class="card-title">Available Plans</h2>
+      <div class="grid md:grid-cols-3 gap-4 mt-4">
+        <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'starter' ? 'border-primary' : 'border-base-300' %>">
+          <h3 class="font-bold text-lg">Starter</h3>
+          <p class="text-2xl font-bold mt-2">$49<span class="text-sm text-base-content/60">/mo</span></p>
+          <p class="text-lg text-base-content/80 mt-1">$490<span class="text-sm text-base-content/60">/yr</span></p>
+          <p class="text-sm text-base-content/60 mt-2">Perfect for getting started</p>
         </div>
-        <p class="text-sm text-base-content/60 mt-4">To change your plan, use the Billing Portal above.</p>
+        <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'professional' ? 'border-primary' : 'border-base-300' %>">
+          <h3 class="font-bold text-lg">Professional</h3>
+          <p class="text-2xl font-bold mt-2">$99<span class="text-sm text-base-content/60">/mo</span></p>
+          <p class="text-lg text-base-content/80 mt-1">$950<span class="text-sm text-base-content/60">/yr</span></p>
+          <p class="text-sm text-base-content/60 mt-2">Higher volume, premium support</p>
+        </div>
+        <div class="border-2 rounded-lg p-4 <%= @account&.plan_tier == 'enterprise' ? 'border-primary' : 'border-base-300' %>">
+          <h3 class="font-bold text-lg">Enterprise</h3>
+          <p class="text-2xl font-bold mt-2">$199<span class="text-sm text-base-content/60">/mo</span></p>
+          <p class="text-lg text-base-content/80 mt-1">$1,990<span class="text-sm text-base-content/60">/yr</span></p>
+          <p class="text-sm text-base-content/60 mt-2">Advanced features, dedicated support</p>
+        </div>
       </div>
-    </div>
+      <p class="text-sm text-base-content/60 mt-4">To change your plan, use the Billing Portal above.</p>
+    <% end %>
   </div>
 </div>
