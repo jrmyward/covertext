@@ -35,6 +35,38 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
     get terms_path
     assert_response :success
     assert_select "h1", text: "Terms of Service"
+    assert_select "a[href=?]", privacy_path
+    assert_select "a[href=?]", sms_consent_path
+  end
+
+  test "terms page should contain required sections" do
+    get terms_path
+    assert_response :success
+
+    # Check for key terms sections
+    assert_select "h2", text: /Acceptance of Terms/
+    assert_select "h2", text: /Definitions/
+    assert_select "h2", text: /Subscription and Billing/
+    assert_select "h2", text: /SMS Service Usage Rules/
+    assert_select "h2", text: /Prohibited Uses/
+    assert_select "h2", text: /Limitation of Liability/
+    assert_select "h2", text: /Termination/
+    assert_select "h2", text: /Governing Law/
+
+    # Check for compliance statements
+    assert_match "customer-initiated, transactional SMS", @response.body
+    assert_match "non-refundable", @response.body
+    assert_match "Workhorse Solutions, LLC", @response.body
+    assert_match "support@covertext.app", @response.body
+  end
+
+  test "terms page should have table of contents with anchor links" do
+    get terms_path
+    assert_response :success
+    assert_select "a[href='#acceptance']"
+    assert_select "a[href='#subscription']"
+    assert_select "a[href='#sms-usage']"
+    assert_select "a[href='#governing-law']"
   end
 
   test "should get SMS consent policy without authentication" do
