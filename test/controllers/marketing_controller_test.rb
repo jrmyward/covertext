@@ -72,7 +72,41 @@ class MarketingControllerTest < ActionDispatch::IntegrationTest
   test "should get SMS consent policy without authentication" do
     get sms_consent_path
     assert_response :success
-    assert_select "h1", text: "SMS Consent Policy"
+    assert_select "h1", text: /SMS Consent/
+    assert_select "a[href=?]", privacy_path
+    assert_select "a[href=?]", terms_path
+  end
+
+  test "sms consent page should contain required sections" do
+    get sms_consent_path
+    assert_response :success
+
+    # Check for key SMS consent sections
+    assert_select "h2", text: /About This SMS Program/
+    assert_select "h2", text: /How to Opt In/
+    assert_select "h2", text: /Message Types and Frequency/
+    assert_select "h2", text: /Getting Help/
+    assert_select "h2", text: /How to Opt Out/
+    assert_select "h2", text: /Sample Messages/
+
+    # Check for compliance statements
+    assert_match "customer-initiated, transactional", @response.body
+    assert_match "Message and data rates may apply", @response.body
+    assert_match /reply STOP/i, @response.body
+    assert_match /reply HELP/i, @response.body
+    assert_match "We do not sell or share your phone number", @response.body
+    assert_match "support@covertext.app", @response.body
+  end
+
+  test "sms consent page should include exact keyword responses" do
+    get sms_consent_path
+    assert_response :success
+
+    # Check for HELP response
+    assert_match /Text your insurance agency for ID cards & policy info/, @response.body
+
+    # Check for STOP confirmation
+    assert_match /You've been unsubscribed from CoverText messages/, @response.body
   end
 
   test "privacy page should contain required sections" do

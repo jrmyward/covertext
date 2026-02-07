@@ -1,4 +1,4 @@
-<% content_for :title, "SMS Consent Policy - CoverText" %>
+<% content_for :title, "SMS Consent & Messaging Terms - CoverText" %>
 
 <div class="container mx-auto max-w-4xl px-4 py-12">
   <!-- Header -->
@@ -7,31 +7,250 @@
       <span class="w-5 h-5 mr-2"><%= heroicon "arrow-left", variant: :mini %></span>
       Back to Home
     <% end %>
-    <h1 class="text-4xl font-bold mb-4">SMS Consent Policy</h1>
+    <h1 class="text-4xl font-bold mb-4">SMS Consent & Messaging Terms</h1>
     <p class="text-base-content/70">Effective Date: <%= Date.today.strftime("%B %d, %Y") %></p>
   </div>
 
-  <!-- Placeholder Content -->
+  <!-- Content -->
   <div class="prose prose-lg max-w-none">
-    <div class="alert alert-info mb-8">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      <span>This SMS Consent Policy page is under construction. Please contact us for current information.</span>
-    </div>
-
+    <!-- Introduction -->
     <section class="mb-8">
-      <h2 class="text-2xl font-bold mb-4">Coming Soon</h2>
+      <h2 class="text-2xl font-bold mb-4">About This SMS Program</h2>
       <p class="mb-4">
-        We are currently finalizing our SMS Consent Policy. In the meantime, if you have questions about SMS messaging with CoverText (operated by Workhorse Solutions, LLC), please contact us at <a href="mailto:support@covertext.app" class="link link-primary">support@covertext.app</a> or (307) 317-9186.
+        CoverText (operated by Workhorse Solutions, LLC) provides an SMS-based messaging service that enables independent insurance agencies to respond to customer service requests via text message. This program is designed for <strong>customer-initiated, transactional communications only</strong> — not for marketing or promotional messages.
+      </p>
+      <p class="mb-4">
+        When you text your insurance agency's CoverText-enabled phone number, you can receive:
+      </p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li>Insurance ID cards and policy documents</li>
+        <li>Policy expiration dates and coverage information</li>
+        <li>Confirmation and status update messages</li>
+        <li>Clarification prompts if we need more information</li>
+        <li>Error or fallback messages if your request cannot be automated</li>
+      </ul>
+    </section>
+
+    <!-- How to Opt In -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">How to Opt In</h2>
+      <p class="mb-4">
+        You opt in to receive SMS messages from your insurance agency by:
+      </p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li><strong>Initiating a text message conversation</strong> to your agency's CoverText-enabled phone number, OR</li>
+        <li><strong>Providing your mobile number</strong> through an agency intake form, application, or website that includes SMS consent language</li>
+      </ul>
+      <div class="bg-base-200 p-4 rounded-lg mb-4">
+        <p class="mb-2"><strong>Note:</strong> Your insurance agency will present clear consent language at the point where your phone number is collected. By texting the agency's number or providing your mobile number with consent, you agree to receive service-related SMS messages.</p>
+      </div>
+      <p class="mb-4">
+        When you first text your agency's CoverText number, you will receive an automated opt-in confirmation message explaining how the service works and how to opt out.
+      </p>
+    </section>
+
+    <!-- Message Types and Frequency -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Message Types and Frequency</h2>
+
+      <h3 class="text-xl font-semibold mb-3">Types of Messages</h3>
+      <p class="mb-4">You may receive the following types of SMS messages:</p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li><strong>Opt-in confirmation:</strong> Initial message explaining the service and how to opt out</li>
+        <li><strong>Document delivery:</strong> Links to insurance ID cards or policy documents via secure MMS</li>
+        <li><strong>Information responses:</strong> Policy expiration dates, coverage details, or status updates</li>
+        <li><strong>Clarification requests:</strong> Prompts asking for more information if your request is unclear</li>
+        <li><strong>Fallback messages:</strong> Notifications that your request requires manual handling and someone will call you back</li>
+        <li><strong>Service messages:</strong> HELP responses, STOP confirmations, or error notifications</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold mb-3">Message Frequency</h3>
+      <p class="mb-4">
+        Message frequency <strong>varies based on your service requests</strong>. Typically, you will receive 1–5 messages per request. The service is designed to respond only when you initiate contact, so you will not receive unsolicited or scheduled messages.
+      </p>
+      <p class="mb-4">
+        <strong>This is not a recurring messaging program.</strong> You will only receive messages when you request service from your insurance agency.
+      </p>
+    </section>
+
+    <!-- Cost and Fees -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Cost and Fees</h2>
+      <p class="mb-4">
+        <strong>Message and data rates may apply</strong> as charged by your mobile carrier. CoverText does not charge you directly for SMS messages, but your carrier may apply standard messaging rates according to your mobile plan.
+      </p>
+      <p class="mb-4">
+        Contact your mobile carrier for details about your messaging plan and any applicable charges.
+      </p>
+    </section>
+
+    <!-- HELP Keyword -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Getting Help</h2>
+      <p class="mb-4">
+        If you need assistance, <strong>reply HELP</strong> at any time. You will receive the following response:
+      </p>
+      <div class="bg-base-200 p-4 rounded-lg mb-4 font-mono text-sm">
+        <p>"CoverText: Text your insurance agency for ID cards & policy info. Reply STOP to opt out. Msg&data rates may apply. Help: support@covertext.app"</p>
+      </div>
+      <p class="mb-4">
+        You can also contact us directly:
+      </p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li><strong>Email:</strong> <a href="mailto:support@covertext.app" class="link link-primary">support@covertext.app</a></li>
+        <li><strong>Phone:</strong> (307) 317-9186</li>
+      </ul>
+    </section>
+
+    <!-- STOP Keyword -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">How to Opt Out</h2>
+      <p class="mb-4">
+        You can <strong>opt out at any time</strong> by replying <strong>STOP</strong> (or UNSUBSCRIBE, CANCEL, END, QUIT) to any message from your agency's CoverText number. You will receive a confirmation message:
+      </p>
+      <div class="bg-base-200 p-4 rounded-lg mb-4 font-mono text-sm">
+        <p>"You've been unsubscribed from CoverText messages. You won't receive any more texts from this number. Reply START to re-subscribe."</p>
+      </div>
+      <p class="mb-4">
+        After opting out, you will not receive any further SMS messages from that phone number. If you change your mind, you can opt back in by replying <strong>START</strong> or by texting the number again with a new service request.
+      </p>
+      <p class="mb-4">
+        You can also opt out by contacting your insurance agency directly or emailing us at <a href="mailto:support@covertext.app" class="link link-primary">support@covertext.app</a>.
+      </p>
+    </section>
+
+    <!-- Supported Keywords -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Supported Keywords</h2>
+      <p class="mb-4">The following keywords are recognized by the CoverText system:</p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li><strong>STOP, UNSUBSCRIBE, CANCEL, END, QUIT:</strong> Opt out of messages</li>
+        <li><strong>START, UNSTOP:</strong> Opt back in after opting out</li>
+        <li><strong>HELP, INFO:</strong> Receive help information</li>
+      </ul>
+      <p class="mb-4">
+        All other messages are treated as service requests and will be processed by your insurance agency's automated system.
+      </p>
+    </section>
+
+    <!-- Privacy and Data Use -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Privacy and Data Use</h2>
+      <p class="mb-4">
+        <strong>We do not sell or share your phone number for third-party marketing purposes.</strong>
+      </p>
+      <p class="mb-4">
+        Your phone number and message content are used exclusively to:
+      </p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li>Identify you and route your service requests to the correct insurance agency</li>
+        <li>Deliver the information or documents you requested</li>
+        <li>Maintain a record of your conversations for audit and compliance purposes</li>
+        <li>Improve our service quality and reliability</li>
+      </ul>
+      <p class="mb-4">
+        For full details on how we collect, use, and protect your information, please review our <%= link_to "Privacy Policy", privacy_path, class: "link link-primary" %>.
+      </p>
+    </section>
+
+    <!-- No Marketing Messages -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">No Marketing or Promotional Messages</h2>
+      <p class="mb-4">
+        <strong>CoverText is a customer service platform, not a marketing tool.</strong> You will <strong>not</strong> receive:
+      </p>
+      <ul class="list-disc pl-6 mb-4 space-y-2">
+        <li>Marketing campaigns or promotional offers</li>
+        <li>Scheduled newsletters or alerts</li>
+        <li>Solicitations or sales pitches</li>
+        <li>Third-party advertising</li>
+      </ul>
+      <p class="mb-4">
+        All messages you receive are in direct response to your initiated service requests or are related to ongoing transactions (such as document delivery or status updates).
+      </p>
+    </section>
+
+    <!-- Sample Messages -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Sample Messages</h2>
+      <p class="mb-4">
+        Here are examples of messages you might receive when using CoverText:
       </p>
 
-      <h3 class="text-xl font-semibold mb-3">Key Information</h3>
-      <ul class="list-disc pl-6 mb-4 space-y-2">
-        <li>CoverText provides customer-initiated, transactional SMS conversations only</li>
-        <li>We do not send marketing or promotional messages</li>
-        <li>Reply STOP at any time to opt out of SMS messages</li>
-        <li>Reply HELP for support information</li>
-        <li>Message and data rates may apply</li>
-      </ul>
+      <div class="space-y-4">
+        <div class="bg-base-200 p-4 rounded-lg">
+          <p class="font-semibold mb-2">Opt-In Confirmation:</p>
+          <p class="font-mono text-sm">"Thanks for texting [Agency Name]! We can help with insurance cards & policy info. Reply STOP to opt out, HELP for help. Msg&data rates may apply."</p>
+        </div>
+
+        <div class="bg-base-200 p-4 rounded-lg">
+          <p class="font-semibold mb-2">ID Card Delivery:</p>
+          <p class="font-mono text-sm">"Here's your insurance ID card for your [Vehicle]: [Secure Link]"</p>
+        </div>
+
+        <div class="bg-base-200 p-4 rounded-lg">
+          <p class="font-semibold mb-2">Policy Expiration Response:</p>
+          <p class="font-mono text-sm">"Your [Policy Type] policy expires on [Date]."</p>
+        </div>
+
+        <div class="bg-base-200 p-4 rounded-lg">
+          <p class="font-semibold mb-2">Clarification Request:</p>
+          <p class="font-mono text-sm">"We found multiple policies for you. Which vehicle do you need the insurance card for?"</p>
+        </div>
+
+        <div class="bg-base-200 p-4 rounded-lg">
+          <p class="font-semibold mb-2">Fallback / Manual Handling:</p>
+          <p class="font-mono text-sm">"Thanks for reaching out! Your request needs personal attention. An agent from [Agency Name] will call you shortly."</p>
+        </div>
+      </div>
+
+      <p class="mt-4 text-sm text-base-content/70">
+        <em>Note: Actual messages may vary. Placeholders like [Agency Name], [Vehicle], [Date], and [Link] will be replaced with real information specific to your request.</em>
+      </p>
+    </section>
+
+    <!-- Carrier Disclaimer -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Carrier Disclaimer</h2>
+      <p class="mb-4">
+        CoverText is available on all major U.S. mobile carriers, but message delivery is subject to carrier network availability and limitations. We cannot guarantee that every message will be delivered or delivered without delay.
+      </p>
+      <p class="mb-4">
+        <strong>Carriers are not liable for delayed or undelivered messages.</strong>
+      </p>
+      <p class="mb-4">
+        If you experience issues receiving messages, please check with your mobile carrier to ensure SMS is enabled on your account and that you have adequate coverage.
+      </p>
+    </section>
+
+    <!-- Terms and Conditions -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Terms and Conditions</h2>
+      <p class="mb-4">
+        By opting in to receive SMS messages from your insurance agency via CoverText, you agree to these SMS Consent & Messaging Terms, our <%= link_to "Terms of Service", terms_path, class: "link link-primary" %>, and our <%= link_to "Privacy Policy", privacy_path, class: "link link-primary" %>.
+      </p>
+      <p class="mb-4">
+        We may update these terms from time to time. Continued use of the SMS service after changes are posted constitutes your acceptance of the updated terms.
+      </p>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Questions or Support</h2>
+      <p class="mb-4">
+        If you have questions about SMS messaging with CoverText, please contact us:
+      </p>
+      <div class="bg-base-200 p-6 rounded-lg mb-4">
+        <p class="mb-2"><strong>Email:</strong> <a href="mailto:support@covertext.app" class="link link-primary">support@covertext.app</a></p>
+        <p class="mb-2"><strong>Phone:</strong> (307) 317-9186</p>
+        <p class="mb-2"><strong>Mailing Address:</strong></p>
+        <p class="pl-4">
+          Workhorse Solutions, LLC<br>
+          1621 Central Ave STE 49009<br>
+          Cheyenne, WY 82001
+        </p>
+        <p class="mt-2"><a href="https://workhorsesolutions.llc" class="link link-primary" target="_blank" rel="noopener">workhorsesolutions.llc</a></p>
+      </div>
     </section>
 
     <!-- Related Policies -->
